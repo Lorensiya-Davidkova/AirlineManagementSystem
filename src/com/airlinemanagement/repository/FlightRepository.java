@@ -1,17 +1,19 @@
 package com.airlinemanagement.repository;
 import com.airlinemanagement.model.Flight;
+import com.airlinemanagement.view.ConsoleView;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class FlightRepository {
     private Set<Flight> flights = new HashSet<>();
+    private ConsoleView view=new ConsoleView();
 
     public void addFlight(Flight flight) {
         if (flights.add(flight)) {
-            System.out.println("🎉 Flight added successfully! 🎉");
+            view.showSuccessMessage("🎉 Flight added successfully! 🎉");
         } else {
-            System.out.println("Flight already exists!");
+            view.showWarningMessage("Flight already exists!");
         }
     }
 
@@ -28,9 +30,9 @@ public class FlightRepository {
 
     public void listAllFlights() {
         if (flights.isEmpty()) {
-            System.out.println("No flights available!");
+            view.showWarningMessage("No flights available!");
         } else {
-            flights.forEach(System.out::println);
+           view.printAllItems(flights);
         }
     }
 }

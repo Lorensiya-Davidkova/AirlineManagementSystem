@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+
 public class AirlineController {
     private Repository<Passenger> passengerRepository = new Repository<>();
     private Repository<Employee> employeeRepository = new Repository<>();
+
     private FlightRepository flightRepository = new FlightRepository();
     private ConsoleView view;
     private CommandManager command = new CommandManager();
@@ -23,6 +25,8 @@ public class AirlineController {
     public AirlineController(ConsoleView view) {
         this.view=view;
         initializeMenu();
+        //добавих този метод за view-то, за да може да се направи избор от потребителя за начин на зареждане на данните
+        //view.chooseRepositoryType(passengerRepository,employeeRepository);
     }
 
     private void initializeMenu() {
@@ -42,7 +46,7 @@ public class AirlineController {
         menuActions.put(14,this::undo);
 
     }
-    public void start() {
+    /*public void start() {
         boolean running = true;
         while (running) {
             int choice = view.showMainMenu();
@@ -52,7 +56,26 @@ public class AirlineController {
             } else if (choice==0) {
                 running = false;
             } else {
-                System.out.println("Invalid option. Please try again.");
+                view.printInvalidChoice();
+            }
+        }
+    }*/
+    public void start() {
+        boolean running = true;
+        while (running) {
+            String undoLabel = command.getLastCommandName();
+
+            int choice = view.showMainMenu(undoLabel);
+            Runnable action = menuActions.get(choice);
+
+            if (action != null) {
+                action.run();
+            } else if (choice == 14) { // Undo
+                command.undo();
+            } else if (choice == 0) {
+                running = false;
+            } else {
+                view.printInvalidChoice();
             }
         }
     }
@@ -71,13 +94,13 @@ public class AirlineController {
     }
 
     private void listAllPassengers() {
-        command.execute(new ListAllUsersCommand<>(passengerRepository));
+        command.execute(new ListAllUsersCommand<>(passengerRepository,view));
     }
 
-    private void listAllEmployees() {command.execute(new ListAllUsersCommand<>(employeeRepository));}
+    private void listAllEmployees() {command.execute(new ListAllUsersCommand<>(employeeRepository,view));}
 
     private void listAllFlights() {
-        command.execute(new ListAllFlightsCommand(flightRepository));
+        command.execute(new ListAllFlightsCommand(flightRepository,view));
     }
 
     private void editPassenger() {

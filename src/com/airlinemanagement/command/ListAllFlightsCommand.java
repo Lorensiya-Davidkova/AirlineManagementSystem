@@ -1,11 +1,14 @@
 package com.airlinemanagement.command;
 
 import com.airlinemanagement.repository.FlightRepository;
+import com.airlinemanagement.view.ConsoleView;
 
 public class ListAllFlightsCommand implements Command {
     private FlightRepository repository;
-    public ListAllFlightsCommand(FlightRepository repo){
+    private ConsoleView view;
+    public ListAllFlightsCommand(FlightRepository repo,ConsoleView view){
         this.repository=repo;
+        this.view=view;
     }
     @Override
     public void execute() {
@@ -14,6 +17,6 @@ public class ListAllFlightsCommand implements Command {
 
     @Override
     public void undo() {
-        System.out.println("⚠️ Undo not applicable for listing flights.");
+        view.showWarningMessage("️Undo not applicable for listing flights.");
     }
 }

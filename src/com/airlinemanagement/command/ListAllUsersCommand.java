@@ -2,14 +2,15 @@ package com.airlinemanagement.command;
 
 import com.airlinemanagement.model.User;
 import com.airlinemanagement.repository.Repository;
+import com.airlinemanagement.view.ConsoleView;
 
-import java.util.Set;
 
 public class ListAllUsersCommand<T extends User> implements Command {
     private Repository<T> repository;
-
-    public ListAllUsersCommand(Repository<T> repo){
+    private ConsoleView view;
+    public ListAllUsersCommand(Repository<T> repo, ConsoleView view){
         this.repository=repo;
+        this.view=view;
     }
     @Override
     public void execute() {
@@ -18,6 +19,6 @@ public class ListAllUsersCommand<T extends User> implements Command {
 
     @Override
     public void undo() {
-        System.out.println("⚠️ Undo not applicable for listing people.");
+        view.showWarningMessage(" Undo not applicable for listing people.");
     }
 }

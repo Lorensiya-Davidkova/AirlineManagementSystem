@@ -1,8 +1,7 @@
 package com.airlinemanagement.model;
-
 public abstract class User {
     private static int nextId = 1;
-    private final int id;
+    private int id;
     private String firstName;
     private String lastName;
     private String telephoneNumber;
@@ -21,7 +20,9 @@ public abstract class User {
         this.lastName = lastName;
         this.telephoneNumber = telephoneNumber;
         this.email = email;
+
     }
+
 
     public int getId() {
         return id;
@@ -65,6 +66,13 @@ public abstract class User {
     }
     @Override
     public abstract User clone(); // Декларираме `clone()` като абстрактен метод, за да не се полуава да питам instance of при колониране в edit-а
+    public void restoreState(User previousState) {
+        this.firstName = previousState.firstName;
+        this.lastName = previousState.lastName;
+        this.telephoneNumber = previousState.telephoneNumber;
+        this.email = previousState.email;
+    }
+
 }
 /*
 Какво е променено?

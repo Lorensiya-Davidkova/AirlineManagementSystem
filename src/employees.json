@@ -1,0 +1,18 @@
+[
+  {
+    "firstName": "Michael",
+    "lastName": "Brown",
+    "telephoneNumber": "555123456",
+    "email": "michael.brown@example.com",
+    "salary": 5000.0,
+    "position": "PILOT"
+  },
+  {
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "telephoneNumber": "555654321",
+    "email": "alice.johnson@example.com",
+    "salary": 3500.0,
+    "position": "FLIGHT_ATTENDANT"
+  }
+]

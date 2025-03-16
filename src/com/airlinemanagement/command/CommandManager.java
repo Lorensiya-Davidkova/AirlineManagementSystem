@@ -1,11 +1,13 @@
 package com.airlinemanagement.command;
 
+import com.airlinemanagement.view.ConsoleView;
+
 import java.util.Stack;
-import java.util.concurrent.ExecutionException;
 
 public class CommandManager {
     private Stack<Command> undoStack=new Stack<>();
     private Stack<Command> redoStack=new Stack<>();
+    private ConsoleView view=new ConsoleView();
 
     public void execute(Command command) {
         command.execute();
@@ -18,7 +20,13 @@ public class CommandManager {
             command.undo();
             redoStack.push(command);
         }else{
-            System.out.println("Nothing to undo!");
+            view.showWarningMessage("Nothing to undo!");
         }
+    }
+    public String getLastCommandName() {
+        if (!undoStack.isEmpty()) {
+            return "Undo " + undoStack.peek().getClass().getSimpleName();
+        }
+        return "Undo (No action)";
     }
 }

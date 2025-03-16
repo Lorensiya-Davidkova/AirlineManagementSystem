@@ -14,7 +14,7 @@ public class BookFlightCommand implements Command{
     private Passenger bookingPassenger;
     private Flight bookedFlight;
 
-    public BookFlightCommand(Repository<Passenger> repo,ConsoleView view,FlightRepository repository){
+    public BookFlightCommand(Repository<Passenger> repo, ConsoleView view, FlightRepository repository){
         this.passengerRepository=repo;
         this.view=view;
         this.flightRepository=repository;
@@ -27,7 +27,7 @@ public class BookFlightCommand implements Command{
             Passenger passenger = passengerRepository.findById(id);
 
             if (passenger == null) {
-                System.out.println("❌ No such passenger, check ID please!");
+                view.showErrorMessage(" No such passenger, check ID please!");
                 return;
             }
 
@@ -37,38 +37,36 @@ public class BookFlightCommand implements Command{
             Flight flight = flightRepository.findFlight(number);
 
             if (flight == null) {
-                System.out.println("❌ No such flight, check flight number!");
+                view.showErrorMessage(" No such flight, check flight number!");
                 return;
             }
-            if (passenger.isBookFlight(flight)) { // Проверяваме дали полетът е успешно добавен
+            if (passenger.bookFlight(flight)) {
                 this.bookedFlight = flight;
-                System.out.println("✅ Flight successfully booked for " + passenger.getFirstName() + " " + passenger.getLastName());
-            } else {
-                System.out.println("⚠️ This flight is already booked by the passenger.");
             }
         }
 
         @Override
         public void undo() {
             if (bookingPassenger == null || bookedFlight == null) {
-                System.out.println("⚠️ No booking to undo.");
+                view.showWarningMessage(" No booking to undo.");
                 return;
             }
 
             Passenger passenger = passengerRepository.findById(bookingPassenger.getId());
 
             if (passenger == null) {
-                System.out.println("❌ Passenger not found in the system.");
+                view.showErrorMessage("Passenger not found in the system.");
                 return;
             }
 
             if (!passenger.getMyFlights().contains(bookedFlight)) {
-                System.out.println("⚠️ Passenger has not booked this flight. Nothing to undo.");
+                view.showWarningMessage("Passenger has not booked this flight. Nothing to undo.");
                 return;
             }
 
+            bookedFlight.cancelSeat();
             passenger.getMyFlights().remove(bookedFlight);
-            System.out.println("↩️ Undo: Flight booking removed for " + passenger.getFirstName() + " " + passenger.getLastName());
+            view.showWarningMessage("Undo: Flight booking removed for " + passenger.getFirstName() + " " + passenger.getLastName());
         }
     }
 

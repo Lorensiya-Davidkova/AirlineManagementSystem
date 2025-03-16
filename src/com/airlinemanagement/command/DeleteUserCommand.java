@@ -1,5 +1,4 @@
 package com.airlinemanagement.command;
-
 import com.airlinemanagement.model.User;
 import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
@@ -23,12 +22,12 @@ public class DeleteUserCommand<T extends User> implements Command{
     @Override
     public void undo() {
         if (deletedUser == null) {
-            System.out.println("⚠️ No user deletion to undo.");
+            view.showWarningMessage("No user deletion to undo.");
             return;
         }
 
         repository.getUsers().add(deletedUser);
-        System.out.println("↩️ Undo: User restored - " + deletedUser.getFirstName() + " " + deletedUser.getLastName());
+        view.showWarningMessage("Undo: User restored - " + deletedUser.getFirstName() + " " + deletedUser.getLastName());
 
         deletedUser = null; // Изчистваме за следващо `undo()`
     }

@@ -1,5 +1,4 @@
 package com.airlinemanagement.command;
-
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
@@ -19,7 +18,7 @@ public class AddPassengerCommand implements Command{
             repo.addUser(passenger);
             addedPassenger = passenger;
         } else {
-            System.out.println("Passenger creation cancelled.");
+           consoleView.showErrorMessage("Passenger creation cancelled.");
         }
     }
 
@@ -28,9 +27,9 @@ public class AddPassengerCommand implements Command{
         if (addedPassenger != null) {
             boolean removed = repo.getUsers().remove(addedPassenger);
             if (removed) {
-                System.out.println("⚠️ Passenger addition undone: " + addedPassenger.getFirstName() + " " + addedPassenger.getLastName());
+                consoleView.showSuccessMessage("Passenger addition undone: " + addedPassenger.getFirstName() + " " + addedPassenger.getLastName());
             } else {
-                System.out.println("Passenger not found.");
+                consoleView.showWarningMessage("Passenger not found.");
             }
         }
     }

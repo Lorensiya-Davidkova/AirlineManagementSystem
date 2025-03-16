@@ -26,9 +26,9 @@ public class AddFlightCommand implements Command{
         if (lastAdded != null) {
             boolean removed = flightRepository.getFlights().remove(lastAdded);
             if (removed) {
-                System.out.println("⚠️ Flight addition undone: " + lastAdded.getFlightNumber());
+                consoleView.showSuccessMessage("Flight addition undone: " + lastAdded.getFlightNumber());
             } else {
-                System.out.println("Flight not found.");
+                consoleView.showWarningMessage("Flight not found.");
             }
         }
     }

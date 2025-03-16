@@ -1,14 +1,16 @@
 package com.airlinemanagement.view;
 
 import com.airlinemanagement.model.*;
+import com.airlinemanagement.repository.Repository;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Set;
 
 public class ConsoleView {
     private final Scanner scanner = new Scanner(System.in);
 
-    public int showMainMenu() {
+    public int showMainMenu(String undoLabel) {
         System.out.println("┌─────────────────────────────────────────────┐");
         System.out.println("│               ✈️  MAIN MENU                 │");
         System.out.println("├─────────────────────────────────────────────┤");
@@ -25,7 +27,7 @@ public class ConsoleView {
         System.out.println("│11. ✈️  Add new flight                       │");
         System.out.println("│12. 📋  List all flights                     │");
         System.out.println("│13. ➕✈️  Book a flight                      │");
-        System.out.println("|14. ↩️ Undo last action                      │");
+        System.out.println("|14. ↩️  " + undoLabel + "                    ");
         System.out.println("│ 0. 🚪  Exit                                 │");
         System.out.println("└─────────────────────────────────────────────┘");
         System.out.print("✏️  Please enter your choice: ");
@@ -34,7 +36,7 @@ public class ConsoleView {
             return scanner.nextInt();
         } catch (InputMismatchException e) {
             scanner.next();
-            System.out.println("❌ Invalid input. Please enter a number.");
+            showErrorMessage("Invalid input. Please enter a number.");
             return -1;
         }
 
@@ -71,7 +73,7 @@ public class ConsoleView {
                 }
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("Invalid salary input. Please enter a numeric value.");
+                showErrorMessage("Invalid salary input. Please enter a numeric value.");
                 scanner.next(); // Изчиства грешния вход
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -84,7 +86,7 @@ public class ConsoleView {
             try {
                 position = Position.valueOf(positionInput);
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid position. Please enter a valid position from the list.");
+                showErrorMessage("Invalid position. Please enter a valid position from the list.");
             }
         }
 
@@ -113,7 +115,7 @@ public class ConsoleView {
                 scanner.nextLine();
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("Invalid ID. Please enter a numeric value.");
+                showErrorMessage("Invalid ID. Please enter a numeric value.");
                 scanner.next(); // Изчиства грешния вход
             }
         }
@@ -163,7 +165,7 @@ public class ConsoleView {
                     double salary = Double.parseDouble(salaryInput);
                     employee.setSalary(salary);
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid salary input. Salary not updated.");
+                    showErrorMessage("Invalid salary input. Salary not updated.");
                 }
             }
 
@@ -172,15 +174,34 @@ public class ConsoleView {
             if (!positionInput.isEmpty()) {
                 try {
                     Position position = Position.valueOf(positionInput.toUpperCase());
-                    employee.setPosition(position.toString());
+                    employee.setPosition(position);
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Invalid position input. Position not updated.");
+                    showErrorMessage("Invalid position input. Position not updated.");
                 }
             }
         }
 
-        System.out.println("✅ User successfully updated!");
+        showSuccessMessage("User successfully updated!");
     }
+
+    public void printInvalidChoice(){
+        showErrorMessage("Invalid option. Please try again.");
+    }
+
+        public void showSuccessMessage(String message) {
+            System.out.println("✅ " + message);
+        }
+        public void showErrorMessage(String message) {
+            System.out.println("❌ " + message);
+        }
+
+        public void showWarningMessage(String message) {
+            System.out.println("⚠️ " + message);
+        }
+        public void printAllItems(Set items){
+            items.forEach(System.out::println);
+        }
+
 }
 
 

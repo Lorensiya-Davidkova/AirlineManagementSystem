@@ -1,4 +1,8 @@
 package com.airlinemanagement.model;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Flight {
     private static int nextFlightId = 1;
     private  int flightId;
@@ -6,7 +10,7 @@ public class Flight {
     private String departure;
     private String destination;
     private String departureTime;
-    private int availableSeats; // Общ ресурс, за който нишките ще се състезават
+    private AtomicInteger availableSeats; // Общ ресурс, за който нишките ще се състезават
 
     public Flight(String flightNumber, String departure, String destination, String departureTime) {
         this.flightId = nextFlightId++;
@@ -14,7 +18,7 @@ public class Flight {
         this.departure = departure;
         this.destination = destination;
         this.departureTime = departureTime;
-        this.availableSeats=3;
+        this.availableSeats = new AtomicInteger(1);
 
     }
 
@@ -42,19 +46,41 @@ public class Flight {
     public String toString() {
         return "Flight ID: " + flightId + ", Number: " + flightNumber + ", From: " + departure + " To: " + destination + ", Departure: " + departureTime;
     }
-    public synchronized boolean bookSeat() {
-        if (availableSeats > 0) {
-            availableSeats--;
-            System.out.println(Thread.currentThread().getName() + " booked a seat. Remaining seats: " + availableSeats);
-            return true;
-        } else {
-            System.out.println(Thread.currentThread().getName() + " can't book a seat. No seats left.");
-            return false;
+    public boolean bookSeat() {
+        while (true) {
+            int currentSeats = availableSeats.get();
+            if (currentSeats > 0) {
+                if (availableSeats.compareAndSet(currentSeats, currentSeats - 1)) {
+                    return true;
+                }
+            } else {
+                return false;
+            }
         }
     }
 
+    public void cancelSeat() {
+        availableSeats.incrementAndGet();
+    }
+
     public int getAvailableSeats() {
-        return availableSeats;
+        return availableSeats.get();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Flight flight = (Flight) obj;
+        return Objects.equals(flightNumber, flight.flightNumber) &&
+                Objects.equals(departure, flight.departure) &&
+                Objects.equals(destination, flight.destination) &&
+                Objects.equals(departureTime, flight.departureTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(flightNumber, departure, destination, departureTime);
     }
 }
 /* Няма сетъри, тъй като полетът не би трябвало да се променя.*/

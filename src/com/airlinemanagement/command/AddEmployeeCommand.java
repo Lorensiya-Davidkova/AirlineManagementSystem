@@ -21,7 +21,7 @@ public class AddEmployeeCommand implements Command{
             repository.addUser(e);
             lastAdded = e;
         } else {
-            System.out.println("Employee creation cancelled.");
+           view.showErrorMessage("Employee creation cancelled.");
         }
     }
 
@@ -29,7 +29,7 @@ public class AddEmployeeCommand implements Command{
     public void undo() {
         if(lastAdded!=null && repository.getUsers().contains(lastAdded)){
             repository.getUsers().remove(lastAdded);
-            System.out.println("⚠️ Employee addition undone.");
+            view.showWarningMessage("️Employee addition undone.");
         }
     }
 
