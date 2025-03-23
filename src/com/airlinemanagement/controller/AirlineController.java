@@ -96,31 +96,6 @@ public class AirlineController {
         }
     }
 }
-/*
-* Обяснение на промените
-1️⃣ Автоматичното обработване на Status
 
-✔️ Всяка команда сега автоматично връща Status и се принтира чрез printStatus().
-✔️ Това премахва нуждата да запазваш Status като поле в класа.
-✔️ executeCommand(Command command) заменя всички дублиращи се методи.
-
-2️⃣ Използване на Consumer<Status> в menuActions
-
-✔️ Позволява по-чист и по-гъвкав код.
-✔️ Вместо да имаш 14 отделни метода, всички команди се обработват от executeCommand().
-✔️ menuActions.put(1, status -> executeCommand(new AddPassengerCommand(passengerRepository, view)));
-
-Изпълнява командата.
-Автоматично обработва Status.
-3️⃣ CommandManager вече се грижи само за изпълнение на команди
-
-✔️ CommandManager вече връща Status, а AirlineController го обработва.
-✔️ Ако в бъдеще направиш клиент-сървър версия, CommandManager може лесно да бъде преместен на сървъра.
-
-4️⃣ undo() също показва последната извършена команда
-
-✔️ Вместо просто Undo last action, сега ще се вижда Undo Add Passenger, Undo Delete Employee, и т.н.
-
-*/
 
 
