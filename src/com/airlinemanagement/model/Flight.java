@@ -21,6 +21,14 @@ public class Flight {
         this.availableSeats = new AtomicInteger(1);
 
     }
+    public Flight(int flightId, String flightNumber, String departure, String destination, String departureTime, int availableSeats) {
+        this.flightId = flightId;
+        this.flightNumber = flightNumber;
+        this.departure = departure;
+        this.destination = destination;
+        this.departureTime = departureTime;
+        this.availableSeats = new AtomicInteger(availableSeats);
+    }
 
     public int getFlightId() {
         return flightId;
@@ -63,10 +71,6 @@ public class Flight {
         availableSeats.incrementAndGet();
     }
 
-    public int getAvailableSeats() {
-        return availableSeats.get();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -82,5 +86,12 @@ public class Flight {
     public int hashCode() {
         return Objects.hash(flightNumber, departure, destination, departureTime);
     }
+    public static void syncNextFlightId(int maxId) {
+        if (maxId >= nextFlightId) {
+            nextFlightId = maxId + 1;
+        }
+    }
+
+
 }
-/* Няма сетъри, тъй като полетът не би трябвало да се променя.*/
+

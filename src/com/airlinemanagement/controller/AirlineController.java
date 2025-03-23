@@ -1,7 +1,9 @@
 package com.airlinemanagement.controller;
 
+import com.airlinemanagement.Status;
 import com.airlinemanagement.command.*;
 import com.airlinemanagement.model.Employee;
+import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.FlightRepository;
 import com.airlinemanagement.repository.Repository;
@@ -9,69 +11,53 @@ import com.airlinemanagement.view.ConsoleView;
 
 import java.util.HashMap;
 import java.util.Map;
-
-
+import java.util.function.Consumer;
 
 public class AirlineController {
-    private Repository<Passenger> passengerRepository = new Repository<>();
-    private Repository<Employee> employeeRepository = new Repository<>();
+    private final Repository<Passenger> passengerRepository;
+    private final Repository<Employee> employeeRepository;
+    private final FlightRepository flightRepository;
+    private final ConsoleView view;
+    private final CommandManager commandManager;
+    private final Map<Integer, Consumer<Status>> menuActions = new HashMap<>();
 
-    private FlightRepository flightRepository = new FlightRepository();
-    private ConsoleView view;
-    private CommandManager command = new CommandManager();
-
-    private final Map<Integer, Runnable> menuActions = new HashMap<>();
-
-    public AirlineController(ConsoleView view) {
-        this.view=view;
+    public AirlineController() {
+        this.view =new ConsoleView();
+        this.passengerRepository = new Repository<>();
+        this.employeeRepository = new Repository<>();
+        this.flightRepository = new FlightRepository();
+        this.commandManager = new CommandManager();
         initializeMenu();
-        //добавих този метод за view-то, за да може да се направи избор от потребителя за начин на зареждане на данните
-        //view.chooseRepositoryType(passengerRepository,employeeRepository);
     }
 
     private void initializeMenu() {
-        menuActions.put(1, this::addPassenger);
-        menuActions.put(2, this::listAllPassengers);
-        menuActions.put(3, this::editPassenger);
-        menuActions.put(4, this::findPassenger);
-        menuActions.put(5, this::deletePassenger);
-        menuActions.put(6, this::addEmployee);
-        menuActions.put(7, this::listAllEmployees);
-        menuActions.put(8, this::editEmployee);
-        menuActions.put(9, this::findEmployee);
-        menuActions.put(10, this::deleteEmployee);
-        menuActions.put(11, this::addFlight);
-        menuActions.put(12, this::listAllFlights);
-        menuActions.put(13,this::bookFlight);
-        menuActions.put(14,this::undo);
-
+        menuActions.put(1, status -> executeCommand(new AddPassengerCommand(passengerRepository, view)));
+        menuActions.put(2, status -> executeCommand(new ListAllUsersCommand<>(passengerRepository)));
+        menuActions.put(3, status -> executeCommand(new EditUserCommand<>(passengerRepository, view)));
+        menuActions.put(4, status -> executeCommand(new FindUserCommand<>(passengerRepository, view)));
+        menuActions.put(5, status -> executeCommand(new DeleteUserCommand<>(passengerRepository, view)));
+        menuActions.put(6, status -> executeCommand(new AddEmployeeCommand(employeeRepository, view)));
+        menuActions.put(7, status -> executeCommand(new ListAllUsersCommand<>(employeeRepository)));
+        menuActions.put(8, status -> executeCommand(new EditUserCommand<>(employeeRepository, view)));
+        menuActions.put(9, status -> executeCommand(new FindUserCommand<>(employeeRepository, view)));
+        menuActions.put(10, status -> executeCommand(new DeleteUserCommand<>(employeeRepository, view)));
+        menuActions.put(11, status -> executeCommand(new AddFlightCommand(flightRepository, view)));
+        menuActions.put(12, status -> executeCommand(new ListAllFlightsCommand(flightRepository)));
+        menuActions.put(13, status -> executeCommand(new BookFlightCommand(passengerRepository, view, flightRepository)));
+        menuActions.put(14, status -> executeUndo());
     }
-    /*public void start() {
-        boolean running = true;
-        while (running) {
-            int choice = view.showMainMenu();
-            Runnable action = menuActions.get(choice);
-            if (action != null) {
-                action.run();
-            } else if (choice==0) {
-                running = false;
-            } else {
-                view.printInvalidChoice();
-            }
-        }
-    }*/
+
     public void start() {
+       chooseRepositoryType();
+
         boolean running = true;
         while (running) {
-            String undoLabel = command.getLastCommandName();
-
+            String undoLabel = commandManager.getLastCommandName();
             int choice = view.showMainMenu(undoLabel);
-            Runnable action = menuActions.get(choice);
+            Consumer<Status> action = menuActions.get(choice);
 
             if (action != null) {
-                action.run();
-            } else if (choice == 14) { // Undo
-                command.undo();
+                action.accept(null); // Предавам `null`, защото `Consumer<Status>` изисква аргумент
             } else if (choice == 0) {
                 running = false;
             } else {
@@ -80,63 +66,61 @@ public class AirlineController {
         }
     }
 
-
-    private void addPassenger() {
-        command.execute(new AddPassengerCommand(passengerRepository, view));
+    private void executeCommand(Command command) {
+        Status status = commandManager.execute(command);
+        printStatus(status);
     }
 
-    private void addEmployee() {
-        command.execute(new AddEmployeeCommand(employeeRepository, view));
+    private void executeUndo() {
+        Status status = commandManager.undo();
+        printStatus(status);
     }
 
-    private void addFlight() {
-        command.execute(new AddFlightCommand(flightRepository, view));
+    private void printStatus(Status status) {
+        if (status == null) return;
+        switch (status.getType()) {
+            case SUCCESS -> view.showSuccessMessage(status.getMessage());
+            case WARNING -> view.showWarningMessage(status.getMessage());
+            case ERROR -> view.showErrorMessage(status.getMessage());
+        }
     }
-
-    private void listAllPassengers() {
-        command.execute(new ListAllUsersCommand<>(passengerRepository,view));
-    }
-
-    private void listAllEmployees() {command.execute(new ListAllUsersCommand<>(employeeRepository,view));}
-
-    private void listAllFlights() {
-        command.execute(new ListAllFlightsCommand(flightRepository,view));
-    }
-
-    private void editPassenger() {
-        command.execute(new EditUserCommand<>(passengerRepository, view));
-    }
-
-    private void editEmployee() {
-        command.execute(new EditUserCommand<>(employeeRepository, view));
-    }
-
-    private void findPassenger() {
-        command.execute(new FindUserCommand<>(passengerRepository, view));
-    }
-
-    private void findEmployee() {
-        command.execute(new FindUserCommand<>(employeeRepository, view));
-    }
-
-    private void deletePassenger() {
-        command.execute(new DeleteUserCommand<>(passengerRepository, view));
-    }
-
-    private void deleteEmployee() {
-        command.execute(new DeleteUserCommand<>(employeeRepository, view));
-    }
-
-    private void bookFlight() {command.execute(new BookFlightCommand(passengerRepository, view, flightRepository));}
-    private void undo() {
-        command.undo();
+    public void chooseRepositoryType() {
+        int choice = view.getRepositoryType();
+        if (choice == 2) {
+            passengerRepository.setUsers(passengerRepository.loadFromJson("/Users/macbookair/Desktop/AirlineManagmentSystem/src/com/airlinemanagement/passengers.json", Passenger.class));
+            employeeRepository.setUsers(employeeRepository.loadFromJson("/Users/macbookair/Desktop/AirlineManagmentSystem/src/com/airlinemanagement/employees.json", Employee.class));
+            flightRepository.setFlights(flightRepository.loadFromJson("/Users/macbookair/Desktop/AirlineManagmentSystem/src/com/airlinemanagement/flights.json", Flight.class));
+            view.showSuccessMessage("Starting with full repositories.");
+        } else if(choice==1) {
+            view.showSuccessMessage("Starting with empty repositories. Add data manually.");
+        }
     }
 }
-
 /*
- Какво подобрих?
-- Динамично Map меню → лесно добавяне на нови функции
-- Обработване на грешки при въвеждане
-- Оптимизиран контролер без дълъг switch-case
-- Чист и подреден код*/
+* Обяснение на промените
+1️⃣ Автоматичното обработване на Status
+
+✔️ Всяка команда сега автоматично връща Status и се принтира чрез printStatus().
+✔️ Това премахва нуждата да запазваш Status като поле в класа.
+✔️ executeCommand(Command command) заменя всички дублиращи се методи.
+
+2️⃣ Използване на Consumer<Status> в menuActions
+
+✔️ Позволява по-чист и по-гъвкав код.
+✔️ Вместо да имаш 14 отделни метода, всички команди се обработват от executeCommand().
+✔️ menuActions.put(1, status -> executeCommand(new AddPassengerCommand(passengerRepository, view)));
+
+Изпълнява командата.
+Автоматично обработва Status.
+3️⃣ CommandManager вече се грижи само за изпълнение на команди
+
+✔️ CommandManager вече връща Status, а AirlineController го обработва.
+✔️ Ако в бъдеще направиш клиент-сървър версия, CommandManager може лесно да бъде преместен на сървъра.
+
+4️⃣ undo() също показва последната извършена команда
+
+✔️ Вместо просто Undo last action, сега ще се вижда Undo Add Passenger, Undo Delete Employee, и т.н.
+
+*/
+
 

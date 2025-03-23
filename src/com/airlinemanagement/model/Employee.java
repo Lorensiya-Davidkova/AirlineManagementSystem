@@ -47,18 +47,6 @@ public class Employee extends User {
     public User clone() {
         return new Employee(getId(), getFirstName(), getLastName(), getTelephoneNumber(), getEmail(), salary, position);
     }
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Employee employee = (Employee) obj;
-        return this.getId() == employee.getId(); // Сравняваме само по ID
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId()); // Използваме само ID
-    }
     public void restoreState(User previousState) {
         super.restoreState(previousState);
         if(previousState instanceof Employee prevEmployee){

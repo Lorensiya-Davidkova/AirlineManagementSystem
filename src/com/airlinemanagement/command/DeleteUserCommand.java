@@ -1,9 +1,10 @@
 package com.airlinemanagement.command;
+import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
 import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
 
-public class DeleteUserCommand<T extends User> implements Command{
+public class DeleteUserCommand<T extends User> implements UndoableCommand{
     private Repository<T> repository;
     private ConsoleView view;
     private T deletedUser;
@@ -14,21 +15,28 @@ public class DeleteUserCommand<T extends User> implements Command{
         this.view=view;
     }
     @Override
-    public void execute() {
+    public Status execute() {
         int id = view.getUserId();
         deletedUser = repository.deleteUser(id);
+        Status status;
+        if(deletedUser==null){
+           status= Status.error("No such user with ID: " + id);
+        }else{
+            status=Status.success("User deleted:" + deletedUser.getFirstName() +" "+ deletedUser.getLastName());
+        }
+        return status;
     }
 
     @Override
-    public void undo() {
+    public Status undo() {
+        Status status;
         if (deletedUser == null) {
-            view.showWarningMessage("No user deletion to undo.");
-            return;
+            return Status.warning("No user deletion to undo.");
         }
 
         repository.getUsers().add(deletedUser);
-        view.showWarningMessage("Undo: User restored - " + deletedUser.getFirstName() + " " + deletedUser.getLastName());
-
+        status= Status.success("Undo: User restored - " + deletedUser.getFirstName() + " " + deletedUser.getLastName());
         deletedUser = null; // Изчистваме за следващо `undo()`
+        return status;
     }
 }

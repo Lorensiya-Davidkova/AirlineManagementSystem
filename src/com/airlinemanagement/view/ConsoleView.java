@@ -1,11 +1,10 @@
 package com.airlinemanagement.view;
 
 import com.airlinemanagement.model.*;
+import com.airlinemanagement.repository.FlightRepository;
 import com.airlinemanagement.repository.Repository;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class ConsoleView {
     private final Scanner scanner = new Scanner(System.in);
@@ -27,7 +26,7 @@ public class ConsoleView {
         System.out.println("│11. ✈️  Add new flight                       │");
         System.out.println("│12. 📋  List all flights                     │");
         System.out.println("│13. ➕✈️  Book a flight                      │");
-        System.out.println("|14. ↩️  " + undoLabel + "                    ");
+        System.out.println("|14. ↩️  " + changeUndoLabel(undoLabel) + "    ");
         System.out.println("│ 0. 🚪  Exit                                 │");
         System.out.println("└─────────────────────────────────────────────┘");
         System.out.print("✏️  Please enter your choice: ");
@@ -39,7 +38,6 @@ public class ConsoleView {
             showErrorMessage("Invalid input. Please enter a number.");
             return -1;
         }
-
     }
     public Passenger getPassengerDetails() {
         System.out.print("First Name: ");
@@ -180,8 +178,6 @@ public class ConsoleView {
                 }
             }
         }
-
-        showSuccessMessage("User successfully updated!");
     }
 
     public void printInvalidChoice(){
@@ -198,8 +194,38 @@ public class ConsoleView {
         public void showWarningMessage(String message) {
             System.out.println("⚠️ " + message);
         }
-        public void printAllItems(Set items){
-            items.forEach(System.out::println);
+        public String changeUndoLabel(String label) {
+            HashMap<String, String> map = new LinkedHashMap<>();
+            map.put("AddEmployeeCommand", "Undo addition new emloyee");
+            map.put("AddFlightCommand", "Undo addition new flight");
+            map.put("AddPassengerCommand", "Undo addition new passenger");
+            map.put("BookFlightCommand", "Undo booking a new flight");
+            map.put("DeleteUserCommand", "Undo deleting user");
+            map.put("EditUserCommand", "Undo editing user");
+            map.put("FindUserCommand", "Undo finding user");
+            map.put("ListAllFlightsCommand", "Undo listing all flights");
+            map.put("ListAllUsersCommand", "Undo listing all users");
+            map.put("Undo (No action)","Undo (No action)");
+            return map.get(label);
+        }
+        public int getRepositoryType(){
+        System.out.println("Enter your choice:");
+        System.out.println("1. Add new data personally \n 2. Load fron JSON");
+        int choice;
+        while(true) {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+                if(choice==1 || choice==2){
+                    break;
+                }else{
+                    System.out.println("Enter only 1 || 2");
+                }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input type!");
+            }
+        }
+        return choice;
         }
 
 }

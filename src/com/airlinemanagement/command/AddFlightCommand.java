@@ -1,10 +1,11 @@
 package com.airlinemanagement.command;
 
+import com.airlinemanagement.Status;
 import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.repository.FlightRepository;
 import com.airlinemanagement.view.ConsoleView;
 
-public class AddFlightCommand implements Command{
+public class AddFlightCommand implements UndoableCommand{
     private FlightRepository flightRepository;
     private ConsoleView consoleView;
     private Flight lastAdded;
@@ -15,21 +16,23 @@ public class AddFlightCommand implements Command{
 
     }
     @Override
-    public void execute() {
+    public Status execute() {
         Flight flight = consoleView.getFlightDetails();
-        flightRepository.addFlight(flight);
+        Status status=flightRepository.addFlight(flight);
         lastAdded=flight;
+        return status;
     }
 
     @Override
-    public void undo() {
+    public Status undo() {
         if (lastAdded != null) {
             boolean removed = flightRepository.getFlights().remove(lastAdded);
             if (removed) {
-                consoleView.showSuccessMessage("Flight addition undone: " + lastAdded.getFlightNumber());
+                return Status.success("Flight addition undone: "+lastAdded.getFlightNumber());
             } else {
-                consoleView.showWarningMessage("Flight not found.");
+                return Status.warning("Flight not found.");
             }
         }
+        return Status.error("No undo for this flight addition supported!");
     }
 }

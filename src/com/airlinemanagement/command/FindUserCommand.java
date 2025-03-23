@@ -1,6 +1,7 @@
 package com.airlinemanagement.command;
 
 
+import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
 import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
@@ -14,18 +15,21 @@ public class FindUserCommand<T extends User> implements Command{
         this.view=view;
     }
     @Override
-    public void execute() {
+    public Status execute() {
+        Status status;
         int userId=view.getUserId();
         T user = repository.findById(userId);
         if(user!=null){
-            view.showSuccessMessage(user.toString());
+            status=Status.success(user.toString());
         }else{
-            view.showErrorMessage("User not found!");
+            status=Status.error("User not found!");
         }
+        return status;
     }
 
-    @Override
-    public void undo() {
-        view.showWarningMessage("Undo not applicable for finding users.");
-    }
+
+   /* @Override
+    public Status undo() {
+        return Status.warning("Undo not applicable for finding users.");
+    }*/
 }

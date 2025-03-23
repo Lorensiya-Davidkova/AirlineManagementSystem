@@ -1,5 +1,8 @@
 package com.airlinemanagement.model;
-public abstract class User {
+
+import java.util.Objects;
+
+public abstract class User{
     private static int nextId = 1;
     private int id;
     private String firstName;
@@ -65,12 +68,30 @@ public abstract class User {
         return "ID: " + id + ", Name: " + firstName + " " + lastName + ", Phone: " + telephoneNumber + ", Email: " + email;
     }
     @Override
-    public abstract User clone(); // Декларираме `clone()` като абстрактен метод, за да не се полуава да питам instance of при колониране в edit-а
+    public abstract User clone(); // Декларирам `clone()` като абстрактен метод, за да не се полуава да питам instance of при колониране в edit-а
     public void restoreState(User previousState) {
         this.firstName = previousState.firstName;
         this.lastName = previousState.lastName;
         this.telephoneNumber = previousState.telephoneNumber;
         this.email = previousState.email;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return this.getId() == user.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    public static void syncNextId(int maxExistingId) {
+        if (maxExistingId >= nextId) {
+            nextId = maxExistingId + 1;
+        }
     }
 
 }

@@ -1,24 +1,23 @@
 package com.airlinemanagement.command;
 
+import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
 import com.airlinemanagement.repository.Repository;
-import com.airlinemanagement.view.ConsoleView;
+
 
 
 public class ListAllUsersCommand<T extends User> implements Command {
     private Repository<T> repository;
-    private ConsoleView view;
-    public ListAllUsersCommand(Repository<T> repo, ConsoleView view){
+
+    public ListAllUsersCommand(Repository<T> repo){
         this.repository=repo;
-        this.view=view;
     }
     @Override
-    public void execute() {
-        repository.listAllUsers();
+    public Status execute() {
+      return repository.listAllUsers();
     }
 
+/*
     @Override
-    public void undo() {
-        view.showWarningMessage(" Undo not applicable for listing people.");
-    }
+    public Status undo(){return Status.warning(" Undo not applicable for listing people.");}*/
 }

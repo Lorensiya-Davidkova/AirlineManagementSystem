@@ -1,10 +1,11 @@
 package com.airlinemanagement.command;
 
+import com.airlinemanagement.Status;
 import com.airlinemanagement.model.Employee;
 import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
 
-public class AddEmployeeCommand implements Command{
+public class AddEmployeeCommand implements UndoableCommand{
     private Repository<Employee> repository;
     ConsoleView view;
     private Employee lastAdded;
@@ -15,22 +16,25 @@ public class AddEmployeeCommand implements Command{
 
 
     @Override
-    public void execute() {
+    public Status execute() {
         Employee e=view.getEmployeeDetails();
+        Status status;
         if (e != null) {
-            repository.addUser(e);
+            status=repository.addUser(e);
             lastAdded = e;
         } else {
-           view.showErrorMessage("Employee creation cancelled.");
+           status=Status.error("Employee creation cancelled.");
         }
+        return status;
     }
 
     @Override
-    public void undo() {
+    public Status undo() {
         if(lastAdded!=null && repository.getUsers().contains(lastAdded)){
             repository.getUsers().remove(lastAdded);
-            view.showWarningMessage("️Employee addition undone.");
+            return Status.warning("️Employee addition undone.");
         }
+        return Status.warning("No addition for this employee!");
     }
 
 }

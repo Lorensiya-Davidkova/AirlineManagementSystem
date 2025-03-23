@@ -8,31 +8,30 @@
     "type": "PASSENGER",
     "myFlights": [
       {
-        "flightId": 101,
+        "flightId": 1,
         "flightNumber": "A123",
         "departure": "New York",
         "destination": "London",
         "departureTime": "2025-04-01T10:00:00",
-        "availableSeats": 5
+        "availableSeats": 1
       },
       {
-        "flightId": 102,
-        "flightNumber": "B456",
+        "flightId": 2,
+        "flightNumber": "BG456",
         "departure": "London",
         "destination": "Paris",
-        "departureTime": "2025-04-02T15:30:00",
+        "departureTime": "2025-04-21T15:45:00",
         "availableSeats": 3
       }
     ]
   },
   {
     "id": 2,
-    "firstName": "Johnu",
-    "lastName": "Doe",
-    "telephoneNumber": "123456789",
-    "email": "john.doe@example.com",
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "telephoneNumber": "987654321",
+    "email": "alice.smith@example.com",
     "type": "PASSENGER",
     "myFlights": []
   }
 ]
-

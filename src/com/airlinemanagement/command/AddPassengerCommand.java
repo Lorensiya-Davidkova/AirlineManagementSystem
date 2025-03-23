@@ -1,9 +1,10 @@
 package com.airlinemanagement.command;
+import com.airlinemanagement.Status;
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
 
-public class AddPassengerCommand implements Command{
+public class AddPassengerCommand implements UndoableCommand{
     private Repository<Passenger> repo;
     private ConsoleView consoleView;
     private Passenger addedPassenger;
@@ -12,25 +13,29 @@ public class AddPassengerCommand implements Command{
         this.consoleView=view;
     }
     @Override
-    public void execute() {
+    public Status execute() {
         Passenger passenger = consoleView.getPassengerDetails();
+
+        Status status;
         if (passenger != null) {
-            repo.addUser(passenger);
+            status=repo.addUser(passenger);
             addedPassenger = passenger;
         } else {
-           consoleView.showErrorMessage("Passenger creation cancelled.");
+           status=Status.error("Passenger creation cancelled.");
         }
+        return status;
     }
 
     @Override
-    public void undo() {
+    public Status undo() {
         if (addedPassenger != null) {
             boolean removed = repo.getUsers().remove(addedPassenger);
             if (removed) {
-                consoleView.showSuccessMessage("Passenger addition undone: " + addedPassenger.getFirstName() + " " + addedPassenger.getLastName());
+                return Status.success("Passenger addition undone: " + addedPassenger.getFirstName() + " " + addedPassenger.getLastName());
             } else {
-                consoleView.showWarningMessage("Passenger not found.");
+                return Status.warning("Passenger not found.");
             }
         }
+        return Status.error("No addition for this passenger supported!");
     }
 }

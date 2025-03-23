@@ -1,11 +1,12 @@
 package com.airlinemanagement.command;
 
 
+import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
 import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
 
-public class EditUserCommand<T extends User> implements Command{
+public class EditUserCommand<T extends User> implements UndoableCommand{
     private Repository<T> repository;
     private ConsoleView view;
     private T previousState;
@@ -15,27 +16,29 @@ public class EditUserCommand<T extends User> implements Command{
         this.view=view;
     }
     @Override
-    public void execute() {
+    public Status execute() {
+        Status status;
         int userId = view.getUserId();
         T user = repository.findById(userId);
         if (user != null) {
             previousState = cloneUser(user);
             view.editUser(user);
+            status=Status.success("User successfully updated!");
         } else {
-            view.showErrorMessage("User not found!");
+            status=Status.error("User not found!");
         }
+        return status;
     }
     @Override
-    public void undo() {
+    public Status undo() {
         if (previousState != null) {
             T user = repository.findById(previousState.getId());
             if (user != null) {
                 user.restoreState(previousState);
-                view.showWarningMessage("Undo: Changes reverted for user " + user.getFirstName() + " " + user.getLastName());
+                return Status.warning("Undo: Changes reverted for user " + user.getFirstName() + " " + user.getLastName());
             }
-        } else {
-            view.showWarningMessage("No previous state to revert to.");
         }
+        return Status.warning("No previous state to revert to.");
     }
     // Метод за клониране на потребителя
     private T cloneUser(T user) {

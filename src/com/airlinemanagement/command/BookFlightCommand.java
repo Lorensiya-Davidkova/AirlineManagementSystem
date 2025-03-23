@@ -1,5 +1,7 @@
 package com.airlinemanagement.command;
 
+import com.airlinemanagement.Status;
+import com.airlinemanagement.StatusType;
 import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.FlightRepository;
@@ -7,7 +9,7 @@ import com.airlinemanagement.repository.Repository;
 import com.airlinemanagement.view.ConsoleView;
 
 
-public class BookFlightCommand implements Command{
+public class BookFlightCommand implements UndoableCommand{
     private Repository<Passenger> passengerRepository;
     private ConsoleView view;
     private FlightRepository flightRepository;
@@ -22,13 +24,12 @@ public class BookFlightCommand implements Command{
 
 
         @Override
-        public void execute()  {
+        public Status execute()  {
             int id = view.getUserId();
             Passenger passenger = passengerRepository.findById(id);
 
             if (passenger == null) {
-                view.showErrorMessage(" No such passenger, check ID please!");
-                return;
+                return Status.error(" No such passenger, check ID please!");
             }
 
             this.bookingPassenger = passenger;
@@ -37,36 +38,36 @@ public class BookFlightCommand implements Command{
             Flight flight = flightRepository.findFlight(number);
 
             if (flight == null) {
-                view.showErrorMessage(" No such flight, check flight number!");
-                return;
+                return Status.error("No such flight, check flight number!");
             }
-            if (passenger.bookFlight(flight)) {
+            Status status=passenger.bookFlight(flight);
+            if (status.getType().equals(StatusType.SUCCESS)) {
                 this.bookedFlight = flight;
+                return Status.success("Thank you for booking flight: "+flight.getFlightNumber());
+            }else{
+                return status;
             }
         }
 
         @Override
-        public void undo() {
+        public Status undo() {
             if (bookingPassenger == null || bookedFlight == null) {
-                view.showWarningMessage(" No booking to undo.");
-                return;
+                return Status.warning(" No booking to undo.");
             }
 
             Passenger passenger = passengerRepository.findById(bookingPassenger.getId());
 
             if (passenger == null) {
-                view.showErrorMessage("Passenger not found in the system.");
-                return;
+                return Status.error("Passenger not found in the system.");
             }
 
             if (!passenger.getMyFlights().contains(bookedFlight)) {
-                view.showWarningMessage("Passenger has not booked this flight. Nothing to undo.");
-                return;
+                return Status.warning("Passenger has not booked this flight. Nothing to undo.");
             }
 
             bookedFlight.cancelSeat();
             passenger.getMyFlights().remove(bookedFlight);
-            view.showWarningMessage("Undo: Flight booking removed for " + passenger.getFirstName() + " " + passenger.getLastName());
+            return Status.success("Undo: Flight booking removed for " + passenger.getFirstName() + " " + passenger.getLastName());
         }
     }
 

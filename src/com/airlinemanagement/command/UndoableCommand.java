@@ -2,7 +2,6 @@ package com.airlinemanagement.command;
 
 import com.airlinemanagement.Status;
 
-
-public interface Command {
-    Status execute();
+public interface UndoableCommand extends Command{
+    Status undo();
 }
