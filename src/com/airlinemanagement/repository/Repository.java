@@ -8,13 +8,7 @@ import java.util.Set;
 public class Repository<T extends User> extends JsonRepository<T> {
     private Set<T> users = new HashSet<>();
 
-    /*public synchronized void addUser(T user) {
-        if (users.add(user)) {
-           view.showSuccessMessage("Successfully added user!");
-        } else {
-            view.showWarningMessage("This user already exists!");
-        }
-    }*/
+ 
     public synchronized Status addUser(T user) {
         if (users.add(user)) {
             return Status.success("Successfully added user!");
