@@ -5,18 +5,18 @@ import com.airlinemanagement.StatusType;
 import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.FlightRepository;
-import com.airlinemanagement.repository.Repository;
+import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
 
 public class BookFlightCommand implements UndoableCommand{
-    private Repository<Passenger> passengerRepository;
+    private UserRepository<Passenger> passengerRepository;
     private ConsoleView view;
     private FlightRepository flightRepository;
     private Passenger bookingPassenger;
     private Flight bookedFlight;
 
-    public BookFlightCommand(Repository<Passenger> repo, ConsoleView view, FlightRepository repository){
+    public BookFlightCommand(UserRepository<Passenger> repo, ConsoleView view, FlightRepository repository){
         this.passengerRepository=repo;
         this.view=view;
         this.flightRepository=repository;

@@ -3,15 +3,15 @@ package com.airlinemanagement.command;
 
 import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
-import com.airlinemanagement.repository.Repository;
+import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
 public class EditUserCommand<T extends User> implements UndoableCommand{
-    private Repository<T> repository;
+    private UserRepository<T> repository;
     private ConsoleView view;
     private T previousState;
 
-    public EditUserCommand(Repository<T> repo, ConsoleView view){
+    public EditUserCommand(UserRepository<T> repo, ConsoleView view){
         this.repository=repo;
         this.view=view;
     }

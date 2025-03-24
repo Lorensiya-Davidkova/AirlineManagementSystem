@@ -1,22 +1,20 @@
 [
   {
+    "salary": 5500.0,
+    "position": "PILOT",
     "id": 3,
     "firstName": "Michael",
     "lastName": "Brown",
     "telephoneNumber": "555123456",
-    "email": "michael.brown@example.com",
-    "position": "PILOT",
-    "salary": 5500.0,
-    "type": "EMPLOYEE"
+    "email": "michael.brown@example.com"
   },
   {
+    "salary": 3000.0,
+    "position": "FLIGHT_ATTENDANT",
     "id": 4,
     "firstName": "Emma",
     "lastName": "Wilson",
     "telephoneNumber": "555987654",
-    "email": "emma.wilson@example.com",
-    "position": "FLIGHT_ATTENDANT",
-    "salary": 3000.0,
-    "type": "EMPLOYEE"
+    "email": "emma.wilson@example.com"
   }
 ]

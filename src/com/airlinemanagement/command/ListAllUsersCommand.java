@@ -2,14 +2,13 @@ package com.airlinemanagement.command;
 
 import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
-import com.airlinemanagement.repository.Repository;
-
+import com.airlinemanagement.repository.UserRepository;
 
 
 public class ListAllUsersCommand<T extends User> implements Command {
-    private Repository<T> repository;
+    private UserRepository<T> repository;
 
-    public ListAllUsersCommand(Repository<T> repo){
+    public ListAllUsersCommand(UserRepository<T> repo){
         this.repository=repo;
     }
     @Override

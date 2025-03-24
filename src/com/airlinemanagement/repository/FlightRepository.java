@@ -5,7 +5,7 @@ import com.airlinemanagement.model.Flight;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FlightRepository extends JsonRepository<Flight> {
+public class FlightRepository {
     private Set<Flight> flights = new HashSet<>();
 
     public Status addFlight(Flight flight) {

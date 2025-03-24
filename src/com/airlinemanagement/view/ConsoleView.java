@@ -1,8 +1,6 @@
 package com.airlinemanagement.view;
 
 import com.airlinemanagement.model.*;
-import com.airlinemanagement.repository.FlightRepository;
-import com.airlinemanagement.repository.Repository;
 
 import java.util.*;
 
@@ -205,7 +203,7 @@ public class ConsoleView {
             map.put("FindUserCommand", "Undo finding user");
             map.put("ListAllFlightsCommand", "Undo listing all flights");
             map.put("ListAllUsersCommand", "Undo listing all users");
-            map.put("Undo (No action)","Undo (No action)");
+            map.put(null,"Undo (No action)");
             return map.get(label);
         }
         public int getRepositoryType(){
@@ -223,6 +221,8 @@ public class ConsoleView {
 
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input type!");
+            } catch (NumberFormatException nfe){
+                System.out.println("Invalid type - enter a number!");
             }
         }
         return choice;

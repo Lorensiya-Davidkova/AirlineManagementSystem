@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Flight {
-    private static int nextFlightId = 1;
+    private static AtomicInteger nextFlightId=new AtomicInteger(1);
     private  int flightId;
     private String flightNumber;
     private String departure;
@@ -13,7 +13,7 @@ public class Flight {
     private AtomicInteger availableSeats; // Общ ресурс, за който нишките ще се състезават
 
     public Flight(String flightNumber, String departure, String destination, String departureTime) {
-        this.flightId = nextFlightId++;
+        this.flightId = nextFlightId.getAndIncrement();
         this.flightNumber = flightNumber;
         this.departure = departure;
         this.destination = destination;
@@ -86,12 +86,8 @@ public class Flight {
     public int hashCode() {
         return Objects.hash(flightNumber, departure, destination, departureTime);
     }
-    public static void syncNextFlightId(int maxId) {
-        if (maxId >= nextFlightId) {
-            nextFlightId = maxId + 1;
-        }
+    public static void syncNextFlightId(int value) {
+        nextFlightId.set(value + 1);
     }
-
-
 }
 

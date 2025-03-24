@@ -2,14 +2,14 @@ package com.airlinemanagement.command;
 
 import com.airlinemanagement.Status;
 import com.airlinemanagement.model.Employee;
-import com.airlinemanagement.repository.Repository;
+import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
 public class AddEmployeeCommand implements UndoableCommand{
-    private Repository<Employee> repository;
+    private UserRepository<Employee> repository;
     ConsoleView view;
     private Employee lastAdded;
-    public AddEmployeeCommand(Repository<Employee> repo,ConsoleView view){
+    public AddEmployeeCommand(UserRepository<Employee> repo,ConsoleView view){
         this.repository=repo;
         this.view=view;
     }

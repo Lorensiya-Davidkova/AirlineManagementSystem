@@ -3,14 +3,14 @@ package com.airlinemanagement.command;
 
 import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
-import com.airlinemanagement.repository.Repository;
+import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
 
 public class FindUserCommand<T extends User> implements Command{
-    private Repository<T> repository;
+    private UserRepository<T> repository;
     private ConsoleView view;
-    public FindUserCommand(Repository<T> repo, ConsoleView view){
+    public FindUserCommand(UserRepository<T> repo, ConsoleView view){
         this.repository=repo;
         this.view=view;
     }

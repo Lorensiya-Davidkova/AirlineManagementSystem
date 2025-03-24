@@ -1,9 +1,10 @@
 package com.airlinemanagement.model;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class User{
-    private static int nextId = 1;
+    private static int nextId =1;
     private int id;
     private String firstName;
     private String lastName;
@@ -93,13 +94,4 @@ public abstract class User{
             nextId = maxExistingId + 1;
         }
     }
-
 }
-/*
-Какво е променено?
-- Направих класа абстрактен, защото User няма да бъде създаван директно, а само чрез Passenger и Employee.
-- Конструкторът вече не използва сетъри, а директно инициализира полетата.
-- id е final и се сетва само веднъж.
-- Сменено е автоматичното ID генериране – сега се случва в User, а не в Passenger и Employee.
-- Вече има абстрактен метод clone()
- */

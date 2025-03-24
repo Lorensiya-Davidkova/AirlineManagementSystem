@@ -1,51 +1,56 @@
 package com.airlinemanagement.controller;
 
+import com.airlinemanagement.FilePaths;
 import com.airlinemanagement.Status;
 import com.airlinemanagement.command.*;
 import com.airlinemanagement.model.Employee;
-import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.FlightRepository;
-import com.airlinemanagement.repository.Repository;
+import com.airlinemanagement.repository.JsonUserRepository;
+import com.airlinemanagement.repository.InMemoryUserRepository;
+import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Set;
+
 
 public class AirlineController {
-    private final Repository<Passenger> passengerRepository;
-    private final Repository<Employee> employeeRepository;
+   private final Set<Passenger> passengerSet = new HashSet<>();
+    private final Set<Employee> employeeSet = new HashSet<>();
+    private  UserRepository<Passenger> passengerRepository;
+    private  UserRepository<Employee> employeeRepository;
     private final FlightRepository flightRepository;
     private final ConsoleView view;
     private final CommandManager commandManager;
-    private final Map<Integer, Consumer<Status>> menuActions = new HashMap<>();
+    private final Map<Integer, Runnable> menuActions = new HashMap<>();
 
     public AirlineController() {
         this.view =new ConsoleView();
-        this.passengerRepository = new Repository<>();
-        this.employeeRepository = new Repository<>();
         this.flightRepository = new FlightRepository();
         this.commandManager = new CommandManager();
         initializeMenu();
     }
 
     private void initializeMenu() {
-        menuActions.put(1, status -> executeCommand(new AddPassengerCommand(passengerRepository, view)));
-        menuActions.put(2, status -> executeCommand(new ListAllUsersCommand<>(passengerRepository)));
-        menuActions.put(3, status -> executeCommand(new EditUserCommand<>(passengerRepository, view)));
-        menuActions.put(4, status -> executeCommand(new FindUserCommand<>(passengerRepository, view)));
-        menuActions.put(5, status -> executeCommand(new DeleteUserCommand<>(passengerRepository, view)));
-        menuActions.put(6, status -> executeCommand(new AddEmployeeCommand(employeeRepository, view)));
-        menuActions.put(7, status -> executeCommand(new ListAllUsersCommand<>(employeeRepository)));
-        menuActions.put(8, status -> executeCommand(new EditUserCommand<>(employeeRepository, view)));
-        menuActions.put(9, status -> executeCommand(new FindUserCommand<>(employeeRepository, view)));
-        menuActions.put(10, status -> executeCommand(new DeleteUserCommand<>(employeeRepository, view)));
-        menuActions.put(11, status -> executeCommand(new AddFlightCommand(flightRepository, view)));
-        menuActions.put(12, status -> executeCommand(new ListAllFlightsCommand(flightRepository)));
-        menuActions.put(13, status -> executeCommand(new BookFlightCommand(passengerRepository, view, flightRepository)));
-        menuActions.put(14, status -> executeUndo());
+        menuActions.put(1, () -> executeCommand(new AddPassengerCommand(passengerRepository, view)));
+        menuActions.put(2, () -> executeCommand(new ListAllUsersCommand<>(passengerRepository)));
+        menuActions.put(3, () -> executeCommand(new EditUserCommand<>(passengerRepository, view)));
+        menuActions.put(4, () -> executeCommand(new FindUserCommand<>(passengerRepository, view)));
+        menuActions.put(5, () -> executeCommand(new DeleteUserCommand<>(passengerRepository, view)));
+        menuActions.put(6, () -> executeCommand(new AddEmployeeCommand(employeeRepository, view)));
+        menuActions.put(7, () -> executeCommand(new ListAllUsersCommand<>(employeeRepository)));
+        menuActions.put(8, () -> executeCommand(new EditUserCommand<>(employeeRepository, view)));
+        menuActions.put(9, () -> executeCommand(new FindUserCommand<>(employeeRepository, view)));
+        menuActions.put(10, () -> executeCommand(new DeleteUserCommand<>(employeeRepository, view)));
+        menuActions.put(11, () -> executeCommand(new AddFlightCommand(flightRepository, view)));
+        menuActions.put(12, () -> executeCommand(new ListAllFlightsCommand(flightRepository)));
+        menuActions.put(13, () -> executeCommand(new BookFlightCommand(passengerRepository, view, flightRepository)));
+        menuActions.put(14, this::executeUndo); // използване на метод референция
     }
+
 
     public void start() {
        chooseRepositoryType();
@@ -54,10 +59,10 @@ public class AirlineController {
         while (running) {
             String undoLabel = commandManager.getLastCommandName();
             int choice = view.showMainMenu(undoLabel);
-            Consumer<Status> action = menuActions.get(choice);
+            Runnable action = menuActions.get(choice);
 
             if (action != null) {
-                action.accept(null); // Предавам `null`, защото `Consumer<Status>` изисква аргумент
+                action.run();
             } else if (choice == 0) {
                 running = false;
             } else {
@@ -84,43 +89,26 @@ public class AirlineController {
             case ERROR -> view.showErrorMessage(status.getMessage());
         }
     }
-    public void chooseRepositoryType() {
+    private void chooseRepositoryType() {
         int choice = view.getRepositoryType();
+        initializeRepositories(choice);
+    }
+
+    private void initializeRepositories(int choice) {
         if (choice == 2) {
-            passengerRepository.setUsers(passengerRepository.loadFromJson("/Users/macbookair/Desktop/AirlineManagmentSystem/src/com/airlinemanagement/passengers.json", Passenger.class));
-            employeeRepository.setUsers(employeeRepository.loadFromJson("/Users/macbookair/Desktop/AirlineManagmentSystem/src/com/airlinemanagement/employees.json", Employee.class));
-            flightRepository.setFlights(flightRepository.loadFromJson("/Users/macbookair/Desktop/AirlineManagmentSystem/src/com/airlinemanagement/flights.json", Flight.class));
-            view.showSuccessMessage("Starting with full repositories.");
-        } else if(choice==1) {
-            view.showSuccessMessage("Starting with empty repositories. Add data manually.");
+            passengerRepository = new JsonUserRepository<>(
+                    FilePaths.PASSENGERS, Passenger.class, passengerSet);
+            employeeRepository = new JsonUserRepository<>(
+                    FilePaths.EMPLOYEES, Employee.class, employeeSet);
+            view.showSuccessMessage("Repositories loaded from JSON.");
+        } else {
+            passengerRepository = new InMemoryUserRepository<>(passengerSet);
+            employeeRepository = new InMemoryUserRepository<>(employeeSet);
+            view.showSuccessMessage("Starting with empty repositories.");
         }
     }
+
 }
-/*
-* Обяснение на промените
-1️⃣ Автоматичното обработване на Status
 
-✔️ Всяка команда сега автоматично връща Status и се принтира чрез printStatus().
-✔️ Това премахва нуждата да запазваш Status като поле в класа.
-✔️ executeCommand(Command command) заменя всички дублиращи се методи.
-
-2️⃣ Използване на Consumer<Status> в menuActions
-
-✔️ Позволява по-чист и по-гъвкав код.
-✔️ Вместо да имаш 14 отделни метода, всички команди се обработват от executeCommand().
-✔️ menuActions.put(1, status -> executeCommand(new AddPassengerCommand(passengerRepository, view)));
-
-Изпълнява командата.
-Автоматично обработва Status.
-3️⃣ CommandManager вече се грижи само за изпълнение на команди
-
-✔️ CommandManager вече връща Status, а AirlineController го обработва.
-✔️ Ако в бъдеще направиш клиент-сървър версия, CommandManager може лесно да бъде преместен на сървъра.
-
-4️⃣ undo() също показва последната извършена команда
-
-✔️ Вместо просто Undo last action, сега ще се вижда Undo Add Passenger, Undo Delete Employee, и т.н.
-
-*/
 
 

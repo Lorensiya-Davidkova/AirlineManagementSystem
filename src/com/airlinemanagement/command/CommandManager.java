@@ -26,10 +26,10 @@ public class CommandManager {
         return status;
     }
     public String getLastCommandName() {
-        if (!undoStack.isEmpty()) {
-            return undoStack.peek().getClass().getSimpleName();
-        }
-        return "Undo (No action)";
+       if (!undoStack.isEmpty()) {
+           return undoStack.peek().getClass().getSimpleName();
+       }
+        return null;
     }
 }
 /*
