@@ -26,13 +26,4 @@ public class Status {
     public String getMessage(){
         return this.message;
     }
-    public void printByStatus(ConsoleView consoleView){
-        if(this.getType().equals(StatusType.SUCCESS)){
-            consoleView.showSuccessMessage(this.getMessage());
-        }else if(this.getType().equals(StatusType.WARNING)){
-            consoleView.showWarningMessage(this.getMessage());
-        }else{
-            consoleView.showErrorMessage(this.getMessage());
-        }
-    }
 }

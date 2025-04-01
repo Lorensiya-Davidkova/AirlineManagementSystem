@@ -29,12 +29,22 @@ public class AddEmployeeCommand implements UndoableCommand{
     }
 
     @Override
+    public String getDisplayText() {
+        return("│ 6. 👥  Add new employee                     │");
+    }
+
+    @Override
     public Status undo() {
         if(lastAdded!=null && repository.getUsers().contains(lastAdded)){
             repository.getUsers().remove(lastAdded);
             return Status.warning("️Employee addition undone.");
         }
         return Status.warning("No addition for this employee!");
+    }
+
+    @Override
+    public String getUndoDisplayText() {
+        return "Undo add employee: "+lastAdded.getFirstName();
     }
 
 }

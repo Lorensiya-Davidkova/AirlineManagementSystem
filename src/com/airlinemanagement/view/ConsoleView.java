@@ -1,5 +1,6 @@
 package com.airlinemanagement.view;
 
+import com.airlinemanagement.command.Command;
 import com.airlinemanagement.model.*;
 
 import java.util.*;
@@ -7,36 +8,26 @@ import java.util.*;
 public class ConsoleView {
     private final Scanner scanner = new Scanner(System.in);
 
-    public int showMainMenu(String undoLabel) {
+    public int showMainMenu(List<Command> commands,String undoLabel) {
         System.out.println("┌─────────────────────────────────────────────┐");
         System.out.println("│               ✈️  MAIN MENU                 │");
         System.out.println("├─────────────────────────────────────────────┤");
-        System.out.println("│ 1. 👤  Add new passenger                    │");
-        System.out.println("│ 2. 📋  List all passengers                  │");
-        System.out.println("│ 3. ✏️  Edit passenger                       │");
-        System.out.println("│ 4. 🔍  Find passenger                       │");
-        System.out.println("│ 5. ❌  Delete passenger                     │");
-        System.out.println("│ 6. 👥  Add new employee                     │");
-        System.out.println("│ 7. 📋  List all employees                   │");
-        System.out.println("│ 8. ✏️  Edit employee                        │");
-        System.out.println("│ 9. 🔍  Find employee                        │");
-        System.out.println("│10. ❌  Delete employee                      │");
-        System.out.println("│11. ✈️  Add new flight                       │");
-        System.out.println("│12. 📋  List all flights                     │");
-        System.out.println("│13. ➕✈️  Book a flight                      │");
-        System.out.println("|14. ↩️  " + changeUndoLabel(undoLabel) + "    ");
+       for(Command c:commands){
+           System.out.println(c.getDisplayText());
+       }
+        System.out.println("|14. ↩️  " + undoLabel + "    ");
         System.out.println("│ 0. 🚪  Exit                                 │");
         System.out.println("└─────────────────────────────────────────────┘");
         System.out.print("✏️  Please enter your choice: ");
-
-        try {
-            return scanner.nextInt();
-        } catch (InputMismatchException e) {
-            scanner.next();
-            showErrorMessage("Invalid input. Please enter a number.");
-            return -1;
-        }
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                scanner.next();
+                showErrorMessage("Invalid input. Please enter a number.");
+                return -1;
+            }
     }
+
     public Passenger getPassengerDetails() {
         System.out.print("First Name: ");
         String firstName = scanner.next();
@@ -192,20 +183,6 @@ public class ConsoleView {
         public void showWarningMessage(String message) {
             System.out.println("⚠️ " + message);
         }
-        public String changeUndoLabel(String label) {
-            HashMap<String, String> map = new LinkedHashMap<>();
-            map.put("AddEmployeeCommand", "Undo addition new emloyee");
-            map.put("AddFlightCommand", "Undo addition new flight");
-            map.put("AddPassengerCommand", "Undo addition new passenger");
-            map.put("BookFlightCommand", "Undo booking a new flight");
-            map.put("DeleteUserCommand", "Undo deleting user");
-            map.put("EditUserCommand", "Undo editing user");
-            map.put("FindUserCommand", "Undo finding user");
-            map.put("ListAllFlightsCommand", "Undo listing all flights");
-            map.put("ListAllUsersCommand", "Undo listing all users");
-            map.put(null,"Undo (No action)");
-            return map.get(label);
-        }
         public int getRepositoryType(){
         System.out.println("Enter your choice:");
         System.out.println("1. Add new data personally \n 2. Load fron JSON");
@@ -227,7 +204,37 @@ public class ConsoleView {
         }
         return choice;
         }
-
 }
+/*
+ public int showMainMenu(List<Command> commands,String undoLabel) {
+        System.out.println("┌─────────────────────────────────────────────┐");
+        System.out.println("│               ✈️  MAIN MENU                 │");
+        System.out.println("├─────────────────────────────────────────────┤");
+        System.out.println("│ 1. 👤  Add new passenger                    │");
+        System.out.println("│ 2. 📋  List all passengers                  │");
+        System.out.println("│ 3. ✏️  Edit passenger                       │");
+        System.out.println("│ 4. 🔍  Find passenger                       │");
+        System.out.println("│ 5. ❌  Delete passenger                     │");
+        System.out.println("│ 6. 👥  Add new employee                     │");
+        System.out.println("│ 7. 📋  List all employees                   │");
+        System.out.println("│ 8. ✏️  Edit employee                        │");
+        System.out.println("│ 9. 🔍  Find employee                        │");
+        System.out.println("│10. ❌  Delete employee                      │");
+        System.out.println("│11. ✈️  Add new flight                       │");
+        System.out.println("│12. 📋  List all flights                     │");
+        System.out.println("│13. ➕✈️  Book a flight                      │");
+        System.out.println("|14. ↩️  " + changeUndoLabel(undoLabel) + "    ");
+        System.out.println("│ 0. 🚪  Exit                                 │");
+        System.out.println("└─────────────────────────────────────────────┘");
+        System.out.print("✏️  Please enter your choice: ");
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                scanner.next();
+                showErrorMessage("Invalid input. Please enter a number.");
+                return -1;
+            }
+    }
+*/
 
 

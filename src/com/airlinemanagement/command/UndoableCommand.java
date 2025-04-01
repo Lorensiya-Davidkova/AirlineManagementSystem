@@ -4,4 +4,5 @@ import com.airlinemanagement.Status;
 
 public interface UndoableCommand extends Command{
     Status undo();
+    String getUndoDisplayText();
 }

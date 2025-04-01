@@ -2,49 +2,58 @@ package com.airlinemanagement.repository;
 import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class InMemoryUserRepository<T extends User> implements UserRepository<T> {
     private Set<T> users;
-    public InMemoryUserRepository(Set<T> users){
-        this.users=users;
+    public InMemoryUserRepository(){
+        this.users = Collections.synchronizedSet(new HashSet<>());
     }
     @Override
-    public synchronized Status addUser(T user) {
-        if (users.add(user)) {
-            return Status.success("Successfully added user!");
-        } else {
-            return Status.warning("This user already exists!");
+    public  Status addUser(T user) {
+        synchronized (users) {
+            if (users.add(user)) {
+                return Status.success("Successfully added user!");
+            } else {
+                return Status.warning("This user already exists!");
+            }
         }
     }
 
     @Override
-    public synchronized T deleteUser(int id) {
-        T user = findById(id);
-        if (user != null) {
-            users.remove(user);
-            return user; // Връщаме изтрития обект, за да го запазим за `undo()`
-        } else {
+    public Result<T> deleteUser(int id) {
+        synchronized(users) {
+            T user = findById(id);
+            if (user != null) {
+                users.remove(user);
+                return Result.success(user, "User deleted:" + user.getFirstName() + " " + user.getLastName());
+            } else {
+                return Result.error("No such user with ID: " + id);
+            }
+        }
+    }
+
+
+    @Override
+    public T findById(int id) {
+        synchronized (users) {
+            for (T user : users) {
+                if (user.getId() == id) {
+                    return user;
+                }
+            }
             return null;
         }
     }
 
-    @Override
-    public T findById(int id) {
-        for (T user : users) {
-            if (user.getId() == id) {
-                return user;
+    public Result<Set<T>> listAllUsers() {
+        synchronized(users) {
+            if (users.isEmpty()) {
+                return Result.warning(new HashSet<>(), "No users in the repository.");
             }
-        }
-        return null;
-    }
-
-    @Override
-    public Status listAllUsers() {
-        if (users.isEmpty()) {
-            return Status.warning("No users in the repository!");
-        } else {
-            return Status.success(users.toString());
+            return Result.success(new HashSet<>(users), "Users listed successfully.");
         }
     }
 

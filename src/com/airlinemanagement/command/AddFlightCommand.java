@@ -3,6 +3,7 @@ package com.airlinemanagement.command;
 import com.airlinemanagement.Status;
 import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.repository.FlightRepository;
+import com.airlinemanagement.repository.InMemoryFlightRepository;
 import com.airlinemanagement.view.ConsoleView;
 
 public class AddFlightCommand implements UndoableCommand{
@@ -24,6 +25,11 @@ public class AddFlightCommand implements UndoableCommand{
     }
 
     @Override
+    public String getDisplayText() {
+        return ("│11. ✈️  Add new flight                       │");
+    }
+
+    @Override
     public Status undo() {
         if (lastAdded != null) {
             boolean removed = flightRepository.getFlights().remove(lastAdded);
@@ -34,5 +40,10 @@ public class AddFlightCommand implements UndoableCommand{
             }
         }
         return Status.error("No undo for this flight addition supported!");
+    }
+
+    @Override
+    public String getUndoDisplayText() {
+        return "Undo add flight: "+lastAdded.getFlightNumber();
     }
 }

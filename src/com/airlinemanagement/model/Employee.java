@@ -55,8 +55,4 @@ public class Employee extends User {
         }
     }
 }
-/*
-Какво е променено?
-- Конструкторът не използва сетъри.
-- Параметърът position е Position вместо String, за да избегнем грешки.
- */
+

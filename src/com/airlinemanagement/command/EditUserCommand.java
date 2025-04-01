@@ -10,10 +10,12 @@ public class EditUserCommand<T extends User> implements UndoableCommand{
     private UserRepository<T> repository;
     private ConsoleView view;
     private T previousState;
+    private final String displayText;
 
-    public EditUserCommand(UserRepository<T> repo, ConsoleView view){
+    public EditUserCommand(UserRepository<T> repo, ConsoleView view,String displayText){
         this.repository=repo;
         this.view=view;
+        this.displayText=displayText;
     }
     @Override
     public Status execute() {
@@ -29,6 +31,12 @@ public class EditUserCommand<T extends User> implements UndoableCommand{
         }
         return status;
     }
+
+    @Override
+    public String getDisplayText() {
+        return displayText;
+    }
+
     @Override
     public Status undo() {
         if (previousState != null) {
@@ -40,6 +48,12 @@ public class EditUserCommand<T extends User> implements UndoableCommand{
         }
         return Status.warning("No previous state to revert to.");
     }
+
+    @Override
+    public String getUndoDisplayText() {
+        return "Undo edit user";
+    }
+
     // Метод за клониране на потребителя
     private T cloneUser(T user) {
         return (T)user.clone();

@@ -49,7 +49,12 @@ public class BookFlightCommand implements UndoableCommand{
             }
         }
 
-        @Override
+    @Override
+    public String getDisplayText() {
+        return ("│13. ➕✈️  Book a flight                      │");
+    }
+
+    @Override
         public Status undo() {
             if (bookingPassenger == null || bookedFlight == null) {
                 return Status.warning(" No booking to undo.");
@@ -69,5 +74,13 @@ public class BookFlightCommand implements UndoableCommand{
             passenger.getMyFlights().remove(bookedFlight);
             return Status.success("Undo: Flight booking removed for " + passenger.getFirstName() + " " + passenger.getLastName());
         }
+
+    @Override
+    public String getUndoDisplayText() {
+        if(bookedFlight!=null) {
+            return "Undo book for flight: " + bookedFlight.getFlightNumber();
+        }
+        return "No booking to undo.";
     }
+}
 

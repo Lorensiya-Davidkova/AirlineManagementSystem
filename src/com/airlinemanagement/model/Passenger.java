@@ -48,6 +48,5 @@ public class Passenger extends User {
     public void restoreState(User previousState) {
         super.restoreState(previousState);
     }
-    /*Може ли да ми кажеш как тези два метода от класовете наследници, да иззтегля в базовия клас,за да се използва ООП?
-    * Първите са от Passenger, а останалите от Employee*/
+
 }

@@ -1,15 +1,19 @@
 package com.airlinemanagement.repository;
 
 import com.airlinemanagement.Status;
+import com.airlinemanagement.StatusType;
 import com.airlinemanagement.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class JsonUserRepository<T extends User> implements UserRepository<T> {
@@ -18,43 +22,52 @@ public class JsonUserRepository<T extends User> implements UserRepository<T> {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Class<T> clazz;
 
-    public JsonUserRepository(String filePath, Class<T> clazz,Set<T> users) {
+    public JsonUserRepository(String filePath, Class<T> clazz) throws IOException{
         this.filePath = filePath;
         this.clazz = clazz;
-        this.users=users;
+        this.users= Collections.synchronizedSet(new HashSet<>());
         load();
     }
 
     @Override
     public Status addUser(T user) {
-        if (users.add(user)) {
-            save();
-            return Status.success("Successfully added user!");
+        synchronized (users) {
+            if (users.add(user)) {
+                return save();
+            }
+            return Status.warning("This user already exists!");
         }
-        return Status.warning("This user already exists!");
     }
 
     @Override
-    public T deleteUser(int id) {
-        T found = findById(id);
-        if (found != null) {
-            users.remove(found);
-            save();
+    public Result<T> deleteUser(int id) {
+        synchronized (users) {
+            T user = findById(id);
+            if (user != null) {
+                users.remove(user);
+                Status saveStatus = save();
+                if (saveStatus.getType() == StatusType.ERROR) {
+                    return Result.warning(user, saveStatus.getMessage());
+                }
+                return Result.success(user, "User deleted successfully.");
+            } else {
+                return Result.error("User not found with ID: " + id);
+            }
         }
-        return found;
     }
-
     @Override
     public T findById(int id) {
-        return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
+        synchronized (users) {
+            return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
+        }
     }
 
-    @Override
-    public Status listAllUsers() {
-        if (users.isEmpty()) {
-            return Status.warning("No users in the repository!");
-        } else {
-            return Status.success(users.toString());
+    public Result<Set<T>> listAllUsers() {
+        synchronized (users) {
+            if (users.isEmpty()) {
+                return Result.warning(new HashSet<>(), "No users in the repository.");
+            }
+            return Result.success(new HashSet<>(users), "Users listed successfully.");
         }
     }
 
@@ -63,29 +76,37 @@ public class JsonUserRepository<T extends User> implements UserRepository<T> {
         return users;
     }
 
-    private void load() {
-        try (FileReader reader = new FileReader(filePath)) {
+
+    private void load() throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) return;
+
+        try (FileReader reader = new FileReader(file)) {
             Type setType = TypeToken.getParameterized(Set.class, clazz).getType();
             Set<T> loaded = gson.fromJson(reader, setType);
             if (loaded != null) {
-                users.addAll(loaded);
-                syncIds();
+                synchronized (users) {
+                    users.addAll(loaded);
+                    syncIds(loaded);
+                }
             }
-        } catch (IOException e) {
-            System.err.println("Load error: " + e.getMessage());
         }
     }
 
-    private void save() {
-        try (FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(users, writer);
-        } catch (IOException e) {
-            System.err.println("Save error: " + e.getMessage());
+
+    private Status save() {
+        synchronized (users) {
+            try (FileWriter writer = new FileWriter(filePath)) {
+                gson.toJson(users, writer);
+                return Status.success("User deleted successfully.");
+            } catch (IOException e) {
+                return Status.error("Error deleting users from file: " + e.getMessage());
+            }
         }
     }
 
-    private void syncIds() {
-        int maxId = users.stream().mapToInt(User::getId).max().orElse(0);
+    private void syncIds(Set<T> loaded) {
+        int maxId = loaded.stream().mapToInt(User::getId).max().orElse(0);
         User.syncNextId(maxId);
     }
 }

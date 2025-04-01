@@ -1,7 +1,7 @@
 package com.airlinemanagement.model;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 public abstract class User{
     private static int nextId =1;

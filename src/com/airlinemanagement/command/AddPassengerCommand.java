@@ -27,6 +27,11 @@ public class AddPassengerCommand implements UndoableCommand{
     }
 
     @Override
+    public String getDisplayText() {
+        return ("│ 1. 👤  Add new passenger                    │");
+    }
+
+    @Override
     public Status undo() {
         if (addedPassenger != null) {
             boolean removed = repo.getUsers().remove(addedPassenger);
@@ -37,5 +42,10 @@ public class AddPassengerCommand implements UndoableCommand{
             }
         }
         return Status.error("No addition for this passenger supported!");
+    }
+
+    @Override
+    public String getUndoDisplayText() {
+        return "Undo add passenger: "+addedPassenger.getFirstName();
     }
 }

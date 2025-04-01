@@ -21,6 +21,14 @@
     "departure": "Berlin",
     "destination": "Rome",
     "departureTime": "2025-04-05T08:45:00",
-    "availableSeats": 10
+    "availableSeats": 9
+  },
+  {
+    "flightId": 4,
+    "flightNumber": "A1230",
+    "departure": "Sofia",
+    "destination": "Looooo",
+    "departureTime": "09",
+    "availableSeats": 1
   }
 ]

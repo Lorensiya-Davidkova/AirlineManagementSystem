@@ -5,4 +5,5 @@ import com.airlinemanagement.Status;
 
 public interface Command {
     Status execute();
+    String getDisplayText();
 }

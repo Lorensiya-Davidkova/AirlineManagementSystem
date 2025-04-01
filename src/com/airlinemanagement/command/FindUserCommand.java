@@ -10,9 +10,11 @@ import com.airlinemanagement.view.ConsoleView;
 public class FindUserCommand<T extends User> implements Command{
     private UserRepository<T> repository;
     private ConsoleView view;
-    public FindUserCommand(UserRepository<T> repo, ConsoleView view){
+    private final String displayText;
+    public FindUserCommand(UserRepository<T> repo, ConsoleView view,String displayText){
         this.repository=repo;
         this.view=view;
+        this.displayText=displayText;
     }
     @Override
     public Status execute() {
@@ -27,9 +29,9 @@ public class FindUserCommand<T extends User> implements Command{
         return status;
     }
 
-
-   /* @Override
-    public Status undo() {
-        return Status.warning("Undo not applicable for finding users.");
-    }*/
+    @Override
+    public String getDisplayText() {
+        //("│ 4. 🔍  Find passenger                       │\n│ 9. 🔍  Find employee                        │");
+        return displayText;
+    }
 }
