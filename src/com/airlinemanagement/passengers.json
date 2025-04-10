@@ -31,13 +31,5 @@
     "lastName": "Petkova",
     "telephoneNumber": "0887784704",
     "email": "anna@gmail.com"
-  },
-  {
-    "myFlights": [],
-    "id": 7,
-    "firstName": "NEW",
-    "lastName": "new",
-    "telephoneNumber": "0",
-    "email": "new"
   }
 ]

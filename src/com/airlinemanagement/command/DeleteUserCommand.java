@@ -44,6 +44,9 @@ public class DeleteUserCommand<T extends User> implements UndoableCommand{
 
     @Override
     public String getUndoDisplayText() {
+        if(deletedUser==null){
+            return "Undo delete user.";
+        }
         return "Undo delete "+deletedUser.getClass().getSimpleName()+" : "+ deletedUser.getFirstName();
     }
 }
