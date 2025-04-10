@@ -61,4 +61,5 @@ public class InMemoryUserRepository<T extends User> implements UserRepository<T>
     public Set<T> getUsers() {
         return users;
     }
+
 }

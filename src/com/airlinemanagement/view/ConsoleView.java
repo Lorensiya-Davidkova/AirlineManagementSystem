@@ -15,7 +15,7 @@ public class ConsoleView {
        for(Command c:commands){
            System.out.println(c.getDisplayText());
        }
-        System.out.println("|14. ↩️  " + undoLabel + "    ");
+       // System.out.println("|14. ↩️  " + undoLabel + "    ");
         System.out.println("│ 0. 🚪  Exit                                 │");
         System.out.println("└─────────────────────────────────────────────┘");
         System.out.print("✏️  Please enter your choice: ");
@@ -185,7 +185,7 @@ public class ConsoleView {
         }
         public int getRepositoryType(){
         System.out.println("Enter your choice:");
-        System.out.println("1. Add new data personally \n 2. Load fron JSON");
+        System.out.println("1. Add new data personally \n2. Load fron JSON");
         int choice;
         while(true) {
             try {

@@ -1,6 +1,6 @@
 package com.airlinemanagement;
 
-import com.airlinemanagement.view.ConsoleView;
+
 
 public class Status {
     private StatusType type;

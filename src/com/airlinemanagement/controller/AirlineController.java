@@ -22,7 +22,6 @@ public class AirlineController {
 
     public AirlineController() {
         this.view = new ConsoleView();
-        this.flightRepository = new InMemoryFlightRepository(); // default
         this.commandManager = new CommandManager();
     }
 
@@ -42,6 +41,8 @@ public class AirlineController {
         menuActions.put(11, () -> new AddFlightCommand(flightRepository, view));
         menuActions.put(12, () -> new ListAllFlightsCommand(flightRepository));
         menuActions.put(13, () -> new BookFlightCommand(passengerRepository, view, flightRepository));
+
+        menuActions.put(14, () -> new UndoCommand(commandManager));
     }
 
     public void start() {
@@ -56,8 +57,8 @@ public class AirlineController {
 
             if (choice == 0) {
                 running = false;
-            } else if (choice == 14) {
-                executeUndo();
+            /*} else if (choice == 14) {
+                executeUndo();*/
             } else {
                 Supplier<Command> supplier = menuActions.get(choice);
                 if (supplier != null) {
@@ -75,10 +76,10 @@ public class AirlineController {
         printStatus(status);
     }
 
-    private void executeUndo() {
+    /*private void executeUndo() {
         Status status = commandManager.undo();
         printStatus(status);
-    }
+    }*/
 
     private void printStatus(Status status) {
         if (status == null) return;
@@ -118,6 +119,8 @@ public class AirlineController {
         }
     }
 }
+/*добавих допълнителен клас за undoCommand, защото да изглежда по-прегледно в start() метода по-горе
+да няма отделна проверка за 14 и съответно да се премахне еxecuteUndo(); методът*/
 
 
 
