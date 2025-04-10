@@ -14,6 +14,6 @@ public class UndoCommand implements Command{
 
     @Override
     public String getDisplayText() {
-        return "14. ↩️"+manager.getLastCommandName();
+        return "│ 14. ↩️"+ manager.getLastCommandName();
     }
 }

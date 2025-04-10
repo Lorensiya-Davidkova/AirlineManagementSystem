@@ -12,4 +12,6 @@ public interface UserRepository<T extends User> {
     T findById(int id);
     Result<Set<T>> listAllUsers();
     Set<T> getUsers();
+
+    Status updateUser(T user);
 }

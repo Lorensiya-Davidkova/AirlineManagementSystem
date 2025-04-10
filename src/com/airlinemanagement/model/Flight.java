@@ -12,6 +12,7 @@ public class Flight {
     private String departureTime;
     private AtomicInteger availableSeats; // Общ ресурс, за който нишките ще се състезават
 
+    public Flight() {}
     public Flight(String flightNumber, String departure, String destination, String departureTime) {
         this.flightId = nextFlightId.getAndIncrement();
         this.flightNumber = flightNumber;

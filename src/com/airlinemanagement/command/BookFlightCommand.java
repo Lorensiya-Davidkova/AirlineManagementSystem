@@ -5,6 +5,7 @@ import com.airlinemanagement.StatusType;
 import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.FlightRepository;
+import com.airlinemanagement.repository.JsonUserRepository;
 import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
@@ -43,6 +44,10 @@ public class BookFlightCommand implements UndoableCommand{
             Status status=passenger.bookFlight(flight);
             if (status.getType().equals(StatusType.SUCCESS)) {
                 this.bookedFlight = flight;
+
+                if (passengerRepository instanceof JsonUserRepository<Passenger> jsonRepo) {
+                    jsonRepo.save();
+                }
                 return Status.success("Thank you for booking flight: "+flight.getFlightNumber());
             }else{
                 return status;

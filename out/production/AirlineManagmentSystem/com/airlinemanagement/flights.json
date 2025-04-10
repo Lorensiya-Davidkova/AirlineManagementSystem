@@ -1,19 +1,27 @@
 [
   {
-    "flightId": 1,
-    "flightNumber": "A123",
-    "departure": "New York",
-    "destination": "London",
-    "departureTime": "2025-04-01T10:00:00",
-    "availableSeats": 1
-  },
-  {
     "flightId": 2,
     "flightNumber": "B456",
     "departure": "London",
     "destination": "Paris",
     "departureTime": "2025-04-02T15:30:00",
     "availableSeats": 3
+  },
+  {
+    "flightId": 5,
+    "flightNumber": "BG456",
+    "departure": "Sofia",
+    "destination": "Lonson",
+    "departureTime": "0",
+    "availableSeats": 1
+  },
+  {
+    "flightId": 1,
+    "flightNumber": "A123",
+    "departure": "New York",
+    "destination": "London",
+    "departureTime": "2025-04-01T10:00:00",
+    "availableSeats": 1
   },
   {
     "flightId": 3,

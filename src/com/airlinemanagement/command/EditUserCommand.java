@@ -3,6 +3,7 @@ package com.airlinemanagement.command;
 
 import com.airlinemanagement.Status;
 import com.airlinemanagement.model.User;
+import com.airlinemanagement.repository.JsonUserRepository;
 import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
@@ -25,6 +26,9 @@ public class EditUserCommand<T extends User> implements UndoableCommand{
         if (user != null) {
             previousState = cloneUser(user);
             view.editUser(user);
+            if (repository instanceof JsonUserRepository<T> jsonRepo) {
+                jsonRepo.save();
+            }
             status=Status.success("User successfully updated!");
         } else {
             status=Status.error("User not found!");

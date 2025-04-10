@@ -62,4 +62,9 @@ public class InMemoryUserRepository<T extends User> implements UserRepository<T>
         return users;
     }
 
+    @Override
+    public Status updateUser(T user) {
+        return Status.success("User updated successfully.");
+    }
+
 }

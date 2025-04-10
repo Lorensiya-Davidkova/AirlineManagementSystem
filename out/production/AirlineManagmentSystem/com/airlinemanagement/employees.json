@@ -9,12 +9,12 @@
     "email": "emma.wilson@example.com"
   },
   {
-    "salary": 899.0,
+    "salary": 3456.0,
     "position": "PILOT",
     "id": 6,
-    "firstName": "Emp1",
-    "lastName": "emp1",
-    "telephoneNumber": "0987",
-    "email": "emp1@abv.bg"
+    "firstName": "Benita",
+    "lastName": "Davidkova",
+    "telephoneNumber": "0887784704",
+    "email": "benita"
   }
 ]

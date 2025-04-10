@@ -76,6 +76,12 @@ public class JsonUserRepository<T extends User> implements UserRepository<T> {
         return users;
     }
 
+    @Override
+    public Status updateUser(T user) {
+        save();
+        return Status.success("User updated successfully.");
+    }
+
 
     private void load() throws IOException {
         File file = new File(filePath);
@@ -94,13 +100,13 @@ public class JsonUserRepository<T extends User> implements UserRepository<T> {
     }
 
 
-    private Status save() {
+    public Status save() {
         synchronized (users) {
             try (FileWriter writer = new FileWriter(filePath)) {
                 gson.toJson(users, writer);
-                return Status.success("User deleted successfully.");
+                return Status.success("User added successfully.");
             } catch (IOException e) {
-                return Status.error("Error deleting users from file: " + e.getMessage());
+                return Status.error("Error saving user in file: " + e.getMessage());
             }
         }
     }

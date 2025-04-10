@@ -21,7 +21,7 @@
     "id": 1,
     "firstName": "John",
     "lastName": "Doe",
-    "telephoneNumber": "123456789",
+    "telephoneNumber": "0000",
     "email": "john.doe@example.com"
   },
   {
@@ -31,5 +31,22 @@
     "lastName": "Petkova",
     "telephoneNumber": "0887784704",
     "email": "anna@gmail.com"
+  },
+  {
+    "myFlights": [
+      {
+        "flightId": 3,
+        "flightNumber": "C789",
+        "departure": "Berlin",
+        "destination": "Rome",
+        "departureTime": "2025-04-05T08:45:00",
+        "availableSeats": 8
+      }
+    ],
+    "id": 7,
+    "firstName": "Катя",
+    "lastName": "Давидкова",
+    "telephoneNumber": "0887784704",
+    "email": "katya"
   }
 ]
