@@ -2,6 +2,8 @@ package com.airlinemanagement.repository;
 
 import com.airlinemanagement.Status;
 import com.airlinemanagement.StatusType;
+import com.airlinemanagement.model.Flight;
+import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,6 +46,7 @@ public class JsonUserRepository<T extends User> implements UserRepository<T> {
         synchronized (users) {
             T user = findById(id);
             if (user != null) {
+                user.onDelete();
                 users.remove(user);
                 Status saveStatus = save();
                 if (saveStatus.getType() == StatusType.ERROR) {
@@ -77,9 +80,17 @@ public class JsonUserRepository<T extends User> implements UserRepository<T> {
     }
 
     @Override
-    public Status updateUser(T user) {
+    public void persist() {
         save();
-        return Status.success("User updated successfully.");
+    }
+
+    @Override
+    public void updateFlights(T user) {
+        if(user.getFlights()!=null) {
+            for (Flight flight : user.getFlights()) {
+                flight.bookSeat();
+            }
+        }
     }
 
 
@@ -104,7 +115,7 @@ public class JsonUserRepository<T extends User> implements UserRepository<T> {
         synchronized (users) {
             try (FileWriter writer = new FileWriter(filePath)) {
                 gson.toJson(users, writer);
-                return Status.success("User added successfully.");
+                return Status.success("User saved successfully.");
             } catch (IOException e) {
                 return Status.error("Error saving user in file: " + e.getMessage());
             }

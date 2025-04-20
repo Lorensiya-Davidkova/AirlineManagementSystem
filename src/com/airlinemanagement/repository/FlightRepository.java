@@ -10,4 +10,5 @@ public interface FlightRepository {
     Result<Set<Flight>> listAllFlights();
     Flight findFlight(String flightNumber);
     Set<Flight> getFlights();
+    void persist();
 }

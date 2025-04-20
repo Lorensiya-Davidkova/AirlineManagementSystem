@@ -5,7 +5,6 @@ import com.airlinemanagement.StatusType;
 import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.model.Passenger;
 import com.airlinemanagement.repository.FlightRepository;
-import com.airlinemanagement.repository.JsonUserRepository;
 import com.airlinemanagement.repository.UserRepository;
 import com.airlinemanagement.view.ConsoleView;
 
@@ -30,7 +29,7 @@ public class BookFlightCommand implements UndoableCommand{
             Passenger passenger = passengerRepository.findById(id);
 
             if (passenger == null) {
-                return Status.error(" No such passenger, check ID please!");
+                return Status.error("No such passenger, check ID please!");
             }
 
             this.bookingPassenger = passenger;
@@ -45,9 +44,8 @@ public class BookFlightCommand implements UndoableCommand{
             if (status.getType().equals(StatusType.SUCCESS)) {
                 this.bookedFlight = flight;
 
-                if (passengerRepository instanceof JsonUserRepository<Passenger> jsonRepo) {
-                    jsonRepo.save();
-                }
+                passengerRepository.persist();
+                flightRepository.persist();
                 return Status.success("Thank you for booking flight: "+flight.getFlightNumber());
             }else{
                 return status;
@@ -57,6 +55,7 @@ public class BookFlightCommand implements UndoableCommand{
     @Override
     public String getDisplayText() {
         return ("│13. ➕✈️  Book a flight                      │");
+       // return ("➕✈️  Book a flight");
     }
 
     @Override
@@ -77,6 +76,8 @@ public class BookFlightCommand implements UndoableCommand{
 
             bookedFlight.cancelSeat();
             passenger.getMyFlights().remove(bookedFlight);
+            passengerRepository.persist();
+            flightRepository.persist();
             return Status.success("Undo: Flight booking removed for " + passenger.getFirstName() + " " + passenger.getLastName());
         }
 

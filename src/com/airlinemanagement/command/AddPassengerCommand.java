@@ -29,13 +29,16 @@ public class AddPassengerCommand implements UndoableCommand{
     @Override
     public String getDisplayText() {
         return ("│ 1. 👤  Add new passenger                    │");
+        //return (" 👤  Add new passenger");
     }
 
     @Override
     public Status undo() {
         if (addedPassenger != null) {
             boolean removed = repo.getUsers().remove(addedPassenger);
+           // repo.deleteUser(addedPassenger.getId());
             if (removed) {
+                repo.persist();
                 return Status.success("Passenger addition undone: " + addedPassenger.getFirstName() + " " + addedPassenger.getLastName());
             } else {
                 return Status.warning("Passenger not found.");

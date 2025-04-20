@@ -26,6 +26,11 @@ public class InMemoryFlightRepository implements FlightRepository{
         return flights;
     }
 
+    @Override
+    public void persist() {
+
+    }
+
     public Flight findFlight(String flightNumber) {
         synchronized (flights) {
             return flights.stream()

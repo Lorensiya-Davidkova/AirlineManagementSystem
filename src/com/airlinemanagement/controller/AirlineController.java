@@ -27,16 +27,16 @@ public class AirlineController {
 
     private void initializeMenu() {
         menuActions.put(1, () -> new AddPassengerCommand(passengerRepository, view));
-        menuActions.put(2, () -> new ListAllUsersCommand<>(passengerRepository, "│ 2. 📋  List all passengers                  │"));
+        menuActions.put(2, () -> new ListAllUsersCommand<>(passengerRepository, "│ 2. 📋List all passengers                    │"));
         menuActions.put(3, () -> new EditUserCommand<>(passengerRepository, view, "│ 3. ✏️  Edit passenger                       │"));
         menuActions.put(4, () -> new FindUserCommand<>(passengerRepository, view, "│ 4. 🔍  Find passenger                       │"));
-        menuActions.put(5, () -> new DeleteUserCommand<>(passengerRepository, view, "│ 5. ❌  Delete passenger                     │"));
+        menuActions.put(5, () -> new DeleteUserCommand<>(passengerRepository, view, "│ 5. ❌  Delete passenger                     │",flightRepository));
 
         menuActions.put(6, () -> new AddEmployeeCommand(employeeRepository, view));
-        menuActions.put(7, () -> new ListAllUsersCommand<>(employeeRepository, "│ 7. 📋  List all employees                   │"));
+        menuActions.put(7, () -> new ListAllUsersCommand<>(employeeRepository, "│ 7.  📋  List all employees                  │"));
         menuActions.put(8, () -> new EditUserCommand<>(employeeRepository, view, "│ 8. ✏️  Edit employee                        │"));
-        menuActions.put(9, () -> new FindUserCommand<>(employeeRepository, view, "│ 9. 🔍  Find employee                        │"));
-        menuActions.put(10, () -> new DeleteUserCommand<>(employeeRepository, view, "│10. ❌  Delete employee                      │"));
+        menuActions.put(9, () -> new FindUserCommand<>(employeeRepository, view, "│ 9.🔍  Find employee                         │" ));
+        menuActions.put(10, () -> new DeleteUserCommand<>(employeeRepository, view, "│ 10. ❌  Delete employee                     │",flightRepository));
 
         menuActions.put(11, () -> new AddFlightCommand(flightRepository, view));
         menuActions.put(12, () -> new ListAllFlightsCommand(flightRepository));
@@ -52,8 +52,7 @@ public class AirlineController {
         boolean running = true;
         while (running) {
             List<Command> commandList = menuActions.values().stream().map(Supplier::get).toList();
-            String undoLabel = commandManager.getLastCommandName();
-            int choice = view.showMainMenu(commandList, undoLabel);
+            int choice = view.showMainMenuAndGetChoice(commandList);
 
             if (choice == 0) {
                 running = false;

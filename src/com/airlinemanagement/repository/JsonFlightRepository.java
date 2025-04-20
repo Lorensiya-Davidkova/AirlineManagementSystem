@@ -62,6 +62,11 @@ public class JsonFlightRepository implements FlightRepository {
         return flights;
     }
 
+    @Override
+    public void persist() {
+        save();
+    }
+
     private void load() throws IOException {
         File file = new File(filePath);
         if (!file.exists()) return;

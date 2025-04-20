@@ -45,8 +45,19 @@ public class Passenger extends User {
         return new Passenger(getId(), getFirstName(), getLastName(), getTelephoneNumber(), getEmail());
     }
 
-    public void restoreState(User previousState) {
+   /*public void restoreState(User previousState) {
         super.restoreState(previousState);
+    }*/
+    public void onDelete(){
+        System.out.println("Poletite na putnika sa: "+myFlights.size());
+        for(Flight flight:myFlights){
+            flight.cancelSeat();
+        }
+    }
+
+    @Override
+    public Set<Flight> getFlights() {
+        return myFlights;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.airlinemanagement.repository;
 import com.airlinemanagement.Status;
+import com.airlinemanagement.model.Flight;
 import com.airlinemanagement.model.User;
 
 import java.util.Collections;
@@ -27,6 +28,7 @@ public class InMemoryUserRepository<T extends User> implements UserRepository<T>
         synchronized(users) {
             T user = findById(id);
             if (user != null) {
+                user.onDelete();//кенсалираме полетите на пътника
                 users.remove(user);
                 return Result.success(user, "User deleted:" + user.getFirstName() + " " + user.getLastName());
             } else {
@@ -63,8 +65,16 @@ public class InMemoryUserRepository<T extends User> implements UserRepository<T>
     }
 
     @Override
-    public Status updateUser(T user) {
-        return Status.success("User updated successfully.");
+    public void persist() {}
+
+    @Override
+    public void updateFlights(T user) {
+        if(user.getFlights()!=null) {
+            for (Flight flight : user.getFlights()) {
+                flight.bookSeat();
+            }
+        }
     }
+
 
 }

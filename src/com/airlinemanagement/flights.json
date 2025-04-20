@@ -1,19 +1,19 @@
 [
   {
+    "flightId": 5,
+    "flightNumber": "BG456",
+    "departure": "Sofia",
+    "destination": "Paris",
+    "departureTime": "16:30",
+    "availableSeats": 3
+  },
+  {
     "flightId": 2,
     "flightNumber": "B456",
     "departure": "London",
     "destination": "Paris",
     "departureTime": "2025-04-02T15:30:00",
     "availableSeats": 3
-  },
-  {
-    "flightId": 5,
-    "flightNumber": "BG456",
-    "departure": "Sofia",
-    "destination": "Lonson",
-    "departureTime": "0",
-    "availableSeats": 1
   },
   {
     "flightId": 1,
@@ -29,14 +29,22 @@
     "departure": "Berlin",
     "destination": "Rome",
     "departureTime": "2025-04-05T08:45:00",
-    "availableSeats": 9
+    "availableSeats": 8
+  },
+  {
+    "flightId": 6,
+    "flightNumber": "MY6",
+    "departure": "Sofia",
+    "destination": "London",
+    "departureTime": "09:00",
+    "availableSeats": 1
   },
   {
     "flightId": 4,
     "flightNumber": "A1230",
     "departure": "Sofia",
-    "destination": "Looooo",
-    "departureTime": "09",
+    "destination": "Copenhagen",
+    "departureTime": "2025-04-15T08:45:00",
     "availableSeats": 1
   }
 ]

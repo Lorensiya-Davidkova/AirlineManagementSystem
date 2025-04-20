@@ -8,14 +8,13 @@ import java.util.*;
 public class ConsoleView {
     private final Scanner scanner = new Scanner(System.in);
 
-    public int showMainMenu(List<Command> commands,String undoLabel) {
+    public int showMainMenuAndGetChoice(List<Command> commands) {
         System.out.println("┌─────────────────────────────────────────────┐");
         System.out.println("│               ✈️  MAIN MENU                 │");
         System.out.println("├─────────────────────────────────────────────┤");
        for(Command c:commands){
            System.out.println(c.getDisplayText());
        }
-       // System.out.println("|14. ↩️  " + undoLabel + "    ");
         System.out.println("│ 0. 🚪  Exit                                 │");
         System.out.println("└─────────────────────────────────────────────┘");
         System.out.print("✏️  Please enter your choice: ");

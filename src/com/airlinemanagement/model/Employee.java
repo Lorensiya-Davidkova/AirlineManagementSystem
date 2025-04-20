@@ -1,6 +1,7 @@
 package com.airlinemanagement.model;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class Employee extends User {
     private double salary;
@@ -53,6 +54,11 @@ public class Employee extends User {
             this.salary = prevEmployee.salary;
             this.position = prevEmployee.position;
         }
+    }
+
+    @Override
+    public Set<Flight> getFlights() {
+        return null;
     }
 }
 

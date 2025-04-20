@@ -31,5 +31,6 @@ public class ListAllFlightsCommand implements Command {
     @Override
     public String getDisplayText() {
         return "│12. 📋  List all flights                     │";
+       // return " 📋  List all flights";
     }
 }

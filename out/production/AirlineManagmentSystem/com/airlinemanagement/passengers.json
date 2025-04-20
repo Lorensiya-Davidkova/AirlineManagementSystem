@@ -26,10 +26,10 @@
   },
   {
     "myFlights": [],
-    "id": 5,
-    "firstName": "Anna",
-    "lastName": "Petkova",
-    "telephoneNumber": "0887784704",
-    "email": "anna@gmail.com"
+    "id": 2,
+    "firstName": "Passenger",
+    "lastName": "passenger",
+    "telephoneNumber": "0987",
+    "email": "pass@abv.bg"
   }
 ]

@@ -27,6 +27,7 @@ public class AddFlightCommand implements UndoableCommand{
     @Override
     public String getDisplayText() {
         return ("│11. ✈️  Add new flight                       │");
+       // return (" ✈️  Add new flight");
     }
 
     @Override
@@ -34,6 +35,7 @@ public class AddFlightCommand implements UndoableCommand{
         if (lastAdded != null) {
             boolean removed = flightRepository.getFlights().remove(lastAdded);
             if (removed) {
+                flightRepository.persist();
                 return Status.success("Flight addition undone: "+lastAdded.getFlightNumber());
             } else {
                 return Status.warning("Flight not found.");

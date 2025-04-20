@@ -1,6 +1,7 @@
 package com.airlinemanagement.model;
 
 import java.util.Objects;
+import java.util.Set;
 
 
 public abstract class User{
@@ -94,4 +95,6 @@ public abstract class User{
             nextId = maxExistingId + 1;
         }
     }
+    public void onDelete(){}
+    public abstract Set<Flight> getFlights();
 }

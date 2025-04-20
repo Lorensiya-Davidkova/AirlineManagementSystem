@@ -2,7 +2,7 @@
   {
     "salary": 3000.0,
     "position": "FLIGHT_ATTENDANT",
-    "id": 4,
+    "id": 3,
     "firstName": "Emma",
     "lastName": "Wilson",
     "telephoneNumber": "555987654",
@@ -11,7 +11,7 @@
   {
     "salary": 3456.0,
     "position": "PILOT",
-    "id": 6,
+    "id": 4,
     "firstName": "Benita",
     "lastName": "Davidkova",
     "telephoneNumber": "0887784704",
